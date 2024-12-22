@@ -1,0 +1,17 @@
+{
+    "builds":[
+        {
+            "src":"FINAL_NUTRITION/app.py",
+            "use":"@vercel/python"
+
+        }
+    ],
+    "routes":[
+        {
+"src":"/(.*)",
+"dest":"FINAL_NUTRITION/app.py"
+        }
+    ]
+}
+
+
