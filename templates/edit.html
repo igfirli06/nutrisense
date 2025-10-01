@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Data Makanan & Gizi</title>
+    <script>
+        function addGiziField() {
+            var container = document.getElementById('gizi-fields');
+            var input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'gizi_name[]';
+            input.placeholder = 'Nama Gizi';
+            var value = document.createElement('input');
+            value.type = 'number';
+            value.name = 'gizi_value[]';
+            value.placeholder = 'Nilai per gram';
+            container.appendChild(input);
+            container.appendChild(value);
+            container.appendChild(document.createElement('br'));
+        }
+    </script>
+</head>
+<body>
+    <h2>Edit Data Makanan & Gizi</h2>
+    <form id="edit-form" method="post">
+        Nama Makanan: <input type="text" name="nama" value="{{ makanan['nama'] }}"><br>
+        Berat (gram): <input type="number" name="berat" step="0.01" value="{{ makanan['berat'] }}"><br>
+        <div id="gizi-fields">
+            {% for g in gizi %}
+                <input type="text" name="gizi_name[]" value="{{ g['nama_gizi'] }}" placeholder="Nama Gizi">
+                <input type="number" name="gizi_value[]" value="{{ g['nilai'] }}" step="0.01" placeholder="Nilai per gram"><br>
+            {% endfor %}
+        </div>
+        <button type="button" onclick="addGiziField()">Tambah Gizi</button><br>
+        <input type="submit" value="Simpan Perubahan">
+    </form>
+    <a href="{{ url_for('admin') }}">Kembali</a>
+</body>
+</html>
+            {% for g in gizi %}
+                <input type="text" name="gizi_name" value="{{ g['nama_gizi'] }}" placeholder="Nama Gizi">
+                <input type="number" name="gizi_value" value="{{ g['nilai'] }}" step="0.01" placeholder="Nilai per gram"><br>
+            {% endfor %}
+        </div>
+        <button type="button" onclick="addGiziField()">Tambah Gizi</button><br>
+        <input type="submit" value="Simpan Perubahan">
+    </form>
+    <a href="{{ url_for('admin') }}">Kembali</a>
+</body>
+</html>

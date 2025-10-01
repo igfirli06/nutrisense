@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hasil Info Gizi</title>
+</head>
+<body>
+    <h2>Informasi Gizi untuk {{ nama }} ({{ berat }} gram)</h2>
+    <ul>
+        {% for h in hasil %}
+            <li>{{ h['nama_gizi'] }}: {{ h['nilai'] }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/">Kembali</a>
+</body>
+</html>

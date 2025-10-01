@@ -1,0 +1,257 @@
+{
+    "nasi merah": {
+        "gizi": {
+            "energi": 149.0,
+            "protein": 2.8,
+            "lemak": 0.8
+        },
+        "gambar": "nasi_merah_beras_merah.jpg",
+        "kategori": "beras"
+    },
+    "angsa": {
+        "gizi": {
+            "Lemak": 31.5,
+            "energi": 349.0,
+            "protein": 16.4
+        },
+        "gambar": "angsa_Screenshot_2025-09-26_105111.png",
+        "kategori": "daging"
+    },
+    "ayam hati": {
+        "gizi": {
+            "Lemak": 16.1,
+            "energi": 261.0,
+            "protein": 27.4
+        },
+        "gambar": "ayam_hati_Screenshot_2025-09-26_105159.png",
+        "kategori": "daging"
+    },
+    "babi kurus segar": {
+        "gizi": {
+            "Lemak": 35.0,
+            "energi": 371.0,
+            "protein": 14.1
+        },
+        "gambar": "babi_kurus_segar_Screenshot_2025-09-26_105616.png",
+        "kategori": "daging"
+    },
+    "babi hati lsegar": {
+        "gizi": {
+            "Lemak": 4.8,
+            "energi": 129.0,
+            "protein": 19.7
+        },
+        "gambar": "babi_hati_lsegar_Screenshot_2025-09-26_105528.png",
+        "kategori": "daging"
+    },
+    "babi ginjal segar": {
+        "gizi": {
+            "Lemak": 4.6,
+            "energi": 110.0,
+            "protein": 16.3
+        },
+        "gambar": "babi_ginjal_segar_Screenshot_2025-09-26_105414.png",
+        "kategori": "daging"
+    },
+    "bebek segar": {
+        "gizi": {
+            "Lemak": 28.6,
+            "energi": 321.0,
+            "protein": 16.0
+        },
+        "gambar": "bebek_segar_Screenshot_2025-09-26_105649.png",
+        "kategori": "daging"
+    },
+    "daging anak sapi gemuk dan segar": {
+        "gizi": {
+            "Lemak": 14.0,
+            "energi": 128.0,
+            "protein": 18.8
+        },
+        "gambar": "daging_anak_sapi_gemuk_dan_segar_Screenshot_2025-09-26_104951.png",
+        "kategori": "daging"
+    },
+    "daging anak sapi kurus dan segar": {
+        "gizi": {
+            "Lemak": 10.0,
+            "energi": 174.0,
+            "protein": 19.6
+        },
+        "gambar": "daging_anak_sapi_kurus_dan_segar_Screenshot_2025-09-26_104951.png",
+        "kategori": "daging"
+    },
+    "daging anak sapi sedang dan segar": {
+        "gizi": {
+            "Lemak": 12.0,
+            "energi": 190.0,
+            "protein": 19.1
+        },
+        "gambar": "daging_anak_sapi_sedang_dan_segar_Screenshot_2025-09-26_104951.png",
+        "kategori": "daging"
+    },
+    "nasi putih": {
+        "gizi": {
+            "energi": 180.0,
+            "protein": 3.0,
+            "lemak": 0.3
+        },
+        "gambar": "nasi_putih_nasi_putih.jpeg",
+        "kategori": "beras"
+    },
+    "nasi tim": {
+        "gizi": {
+            "energi": 120.0,
+            "protein": 2.4,
+            "lemak": 0.4
+        },
+        "gambar": "nasi_tim_bubur-polos.jpg",
+        "kategori": "beras"
+    },
+    "beras ketan hitam": {
+        "gizi": {
+            "energi": 360.0,
+            "protein": 8.0,
+            "lemak": 2.3
+        },
+        "gambar": "beras_ketan_hitam_bubur-polos.jpg",
+        "kategori": "beras"
+    },
+    "resep": {
+        "Bihun Goreng Putih": {
+            "deskripsi": "informasi gizi:\nKomposisi \nair 9.0 g\nEnergi 381 g\nProtein 6.1 Kal\nLemak 3.9 g\nKarbohidrat 80.3  \nKalsium 266 mg\n\n\n250 gr Bihun\n3 butir Telur\n2 buah Dada ayam (tambahan saya), potong kotak\n5 butir Bakso (saya ganti 1 buah Fish cake), iris\n3 lembar Kol, iris\n1 genggam Taoge (tambahan saya)\n1 batang Daun bawang, potong panjang\n3 tangkai Seledri, potong kasar\n2 buah Cabe merah, iris serong\n1 sdm Kecap ikan\nSecukupnya Garam\n1/2 sdt Merica bubuk\n1 sdt Kaldu jamur\n2 sdm minyak untuk membuat telur orak arik\n2 sdm minyak untuk tumis bumbu\nBumbu Halus :\n5 siung Bawang putih\n7 buah Bawang merah\n4 biji Kemiri\n1/2 sdm Ebi (optional)\n1/2 sdt Garam\n\nCara Membuat\n 30 menit\n1\nPanaskan minyak, buat telur orak arik sampai matang, sisihkan.\n\n2\nPanaskan minyak, tumis bumbu halus sampai harum dan matang.\n\n3\nTambahkan potongan ayam, tumis sampai ayam berubah warna, tambahkan irisan bakso atau fish cake. Aduk rata.\n\n4\nTambahkan kol, daun bawang, seledri, cabe merah, kecap ikan, dan bihun. Aduk rata.\n\n5\nJika sayuran sudah agak layu, tambahkan garam, lada dan kaldu jamur. Aduk rata. Tambahkan taoge.\n\n6\nKoreksi rasa, jika sudah pas, angkat dan sajikan. Sajikan dengan sambal rawit (saya tidak buat).\n\n7\nBisa ditaburi dengan bawang goreng dan juga timun dan kerupuk.\n\n8\nAyam bisa diganti dengan udang atau bahan lain sesuai selera. Begitu juga dengan bakso atau sayuran lainnya.",
+            "bahan": [
+                "taoge",
+                "bihun"
+            ],
+            "gambar": ""
+        }
+    },
+    "makanan": {
+        "nasi putih": {
+            "gizi": {
+                "energi": {
+                    "nilai": 180.0,
+                    "satuan": "kal"
+                },
+                "lemak": {
+                    "nilai": 0.3,
+                    "satuan": "g"
+                },
+                "protein": {
+                    "nilai": 3.0,
+                    "satuan": "g"
+                },
+                "serat": {
+                    "nilai": 0.2,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "nasi_putih_nasi_putih.jpeg",
+            "kategori": "beras"
+        },
+        "nasi tim": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 120.0,
+                    "satuan": "kal"
+                },
+                "karbohidrat": {
+                    "nilai": 26.0,
+                    "satuan": "g"
+                },
+                "lemak": {
+                    "nilai": 0.4,
+                    "satuan": "g"
+                },
+                "protein": {
+                    "nilai": 2.4,
+                    "satuan": "g"
+                },
+                "serat": {
+                    "nilai": 0.5,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "nasi_tim_bubur-polos.jpg",
+            "kategori": "beras"
+        },
+        "nasi merah": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 149.0,
+                    "satuan": "kal"
+                },
+                "Karbohidrat": {
+                    "nilai": 32.5,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.4,
+                    "satuan": "g"
+                },
+                "Protein": {
+                    "nilai": 2.8,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.3,
+                    "satuan": "g"
+                },
+                "Kalsium": {
+                    "nilai": 6.0,
+                    "satuan": "mg"
+                },
+                "Fosfor": {
+                    "nilai": 6.3,
+                    "satuan": "mg"
+                }
+            },
+            "gambar": "nasi_merah_beras_merah.jpg",
+            "kategori": "beras"
+        },
+        "bihun": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 348.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 4.7,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.1,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 82.1,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 1.2,
+                    "satuan": "g"
+                },
+                "Kalsium": {
+                    "nilai": 6.0,
+                    "satuan": "mg"
+                },
+                "Fosfor": {
+                    "nilai": 35.0,
+                    "satuan": "mg"
+                }
+            },
+            "gambar": "bihun_Screenshot_2025-09-30_135603.png",
+            "kategori": "sayur"
+        },
+        "taoge": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 0.0,
+                    "satuan": "kal"
+                }
+            },
+            "gambar": "",
+            "kategori": "sayur"
+        }
+    }
+}

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resep dengan Bahan: {{ bahan }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #005a87;
+            text-align: center;
+        }
+        .nav {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .nav a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .nav a:hover {
+            background: #0056b3;
+        }
+        .resep-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            background: #f9f9f9;
+        }
+        .resep-title {
+            font-size: 1.5em;
+            color: #005a87;
+            margin-bottom: 10px;
+        }
+        .resep-deskripsi {
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        .bahan-list, .gizi-list {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .bahan-list li, .gizi-list li {
+            margin: 5px 0;
+        }
+        .gizi-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        .gizi-table th, .gizi-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .gizi-table th {
+            background: #f2f2f2;
+        }
+        .no-resep {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resep yang Mengandung: {{ bahan }}</h1>
+        
+        <div class="nav">
+            <a href="/">Home</a>
+
+        </div>
+
+        {% if hasil %}
+            <p>Ditemukan {{ hasil|length }} resep yang mengandung <strong>{{ bahan }}</strong>:</p>
+            
+            {% for r in hasil %}
+            <div class="resep-card">
+                <div class="resep-title">{{ r.nama_resep }}</div>
+                {% if r.deskripsi %}
+                <div class="resep-deskripsi">{{ r.deskripsi }}</div>
+                {% endif %}
+                
+                <h3>Bahan-bahan:</h3>
+                <ul class="bahan-list">
+                    {% for b in r.bahan %}
+                    <li>{{ b }}</li>
+                    {% endfor %}
+                </ul>
+                
+                <h3>Informasi Gizi (per porsi):</h3>
+                {% if r.gizi %}
+<table class="gizi-table">
+    <thead>
+        <tr>
+            <th>Jenis Gizi</th>
+            <th>Jumlah</th>
+            <th>Satuan</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for gizi_nama, gizi_nilai in r.gizi.items() %}
+        <tr>
+            <td>{{ gizi_nama }}</td>
+            <td>{{ gizi_nilai }}</td>
+            <td>{{ r.satuan.get(gizi_nama, 'g') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+                {% else %}
+                <p style="color: #666;">Informasi gizi tidak tersedia</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-resep">
+                <h3>Tidak ditemukan resep yang mengandung "{{ bahan }}"</h3>
+                <p>Silakan coba dengan bahan lainnya atau tambahkan resep baru di Admin Panel.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

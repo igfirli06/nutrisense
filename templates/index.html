@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daftar Makanan - Nutrisense</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f0f2f5; 
+            margin: 0; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 40px auto; 
+            background: #fff; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
+            padding: 30px; 
+        }
+        h2 { 
+            color: #2c3e50; 
+            margin-bottom: 30px; 
+            text-align: center;
+        }
+        .makanan-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        .makanan-card { 
+            background: #fafafa; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+            padding: 20px; 
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .makanan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .makanan-card img { 
+            width: 180px; 
+            height: 120px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            margin-bottom: 10px; 
+            background: #eee; 
+        }
+        .makanan-card h3 { 
+            margin: 10px 0 8px 0; 
+            font-size: 1.2em; 
+            color: #3498db; 
+        }
+        .makanan-card ul { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+        }
+        .makanan-card ul li { 
+            background: #fff; 
+            margin-bottom: 6px; 
+            padding: 6px 10px; 
+            border-radius: 6px; 
+            font-size: 0.98em; 
+        }
+
+        /* Section Informasi Gizi Anak */
+        .gizi-info-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+        .gizi-info-section h2 {
+            color: white;
+            margin-bottom: 30px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .info-card h3 {
+            color: #ffeb3b;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        .info-card ul li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .info-card ul li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4cd137;
+            font-weight: bold;
+        }
+
+        /* Tips Section */
+        .tips-section {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .tip-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .tip-item h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        /* Kebutuhan Harian Section */
+        .kebutuhan-section {
+            background: #ecf0f1;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .kebutuhan-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .kebutuhan-table th,
+        .kebutuhan-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .kebutuhan-table th {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        .kebutuhan-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .kebutuhan-table tr:hover {
+            background: #e3f2fd;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .container { padding: 20px; }
+            .makanan-list { grid-template-columns: repeat(2, 1fr); }
+            .info-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .makanan-list { grid-template-columns: 1fr; }
+            .gizi-info-section { padding: 20px; }
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        .nav-tab {
+            padding: 12px 25px;
+            background: none;
+            border: none;
+            font-size: 1.1em;
+            cursor: pointer;
+            color: #7f8c8d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .nav-tab.active {
+            color: #3498db;
+            border-bottom: 3px solid #3498db;
+            font-weight: 600;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🌱 NutriSense - Pusat Informasi Gizi Anak</h2>
+        
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('daftar-makanan')">🥗 Daftar Makanan</button>
+            <button class="nav-tab" onclick="showTab('info-gizi')">📚 Info Gizi Anak</button>
+            <button class="nav-tab" onclick="showTab('tips-sehat')">💡 Tips Sehat</button>
+            <button class="nav-tab" onclick="showTab('kebutuhan-harian')">📊 Kebutuhan Harian</button>
+        </div>
+
+        <!-- Tab 1: Daftar Makanan -->
+        <div id="daftar-makanan" class="tab-content active">
+            {% set kategori_list = ['buah', 'sayur', 'daging', 'beras'] %}
+            {% for kategori in kategori_list %}
+                <h3 style="color:#27ae60; margin-top:30px;">{{ kategori|title }}</h3>
+                <div class="makanan-list">
+                    {% for nama, item in makanan.items() %}
+                        {% if item.get('kategori','').lower() == kategori %}
+                            <div class="makanan-card">
+                                <a href="{{ url_for('resep_by_bahan', bahan=nama) }}" style="text-decoration:none; color:inherit;">
+                                    {% if item.gambar %}
+                                        <img src="{{ url_for('serve_image', filename=item.gambar) }}" alt="{{ nama }}">
+                                    {% else %}
+                                        <img src="https://via.placeholder.com/180x120?text=No+Image" alt="No Image">
+                                    {% endif %}
+                                    <h3>{{ nama|title }}</h3>
+                                </a>
+                                <ul>
+                                    {% for gizi_nama, gizi_nilai in item.gizi.items() %}
+                                    <li>{{ gizi_nama|title }}: {{ gizi_nilai['nilai'] }} {{ gizi_nilai['satuan'] }} / gram</li>
+                                    {% endfor %}
+                                </ul>
+
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Tab 2: Informasi Gizi Anak -->
+        <div id="info-gizi" class="tab-content">
+            <div class="gizi-info-section">
+                <h2>💪 Informasi Penting Gizi untuk Anak</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>🍎 Zat Gizi Makro</h3>
+                        <ul>
+                            <li><strong>Karbohidrat:</strong> Sumber energi utama untuk aktivitas sehari-hari</li>
+                            <li><strong>Protein:</strong> Penting untuk pertumbuhan dan perkembangan otot</li>
+                            <li><strong>Lemak Sehat:</strong> Mendukung perkembangan otak dan penyerapan vitamin</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h3>🥦 Zat Gizi Mikro</h3>
+                        <ul>
+                            <li><strong>Vitamin A:</strong> Untuk kesehatan mata dan sistem imun</li>
+                            <li><strong>Vitamin C:</strong> Meningkatkan daya tahan tubuh dan penyerapan zat besi</li>
+                            <li><strong>Kalsium:</strong> Membangun tulang dan gigi yang kuat</li>
+                            <li><strong>Zat Besi:</strong> Mencegah anemia dan mendukung perkembangan kognitif</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h3>🌟 Manfaat Gizi Seimbang</h3>
+                        <ul>
+                            <li>Meningkatkan konsentrasi belajar</li>
+                            <li>Mendukung pertumbuhan optimal</li>
+                            <li>Meningkatkan daya tahan tubuh</li>
+                            <li>Mencegah stunting dan obesitas</li>
+                            <li>Mengoptimalkan perkembangan otak</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Tips Sehat -->
+        <div id="tips-sehat" class="tab-content">
+            <div class="tips-section">
+                <h2 style="color:#e74c3c;">💡 Tips Pola Makan Sehat untuk Anak</h2>
+                <div class="tips-grid">
+                    <div class="tip-item">
+                        <h4>🥗 Variasi Makanan</h4>
+                        <p>Berikan berbagai jenis makanan dengan warna berbeda untuk memastikan asupan gizi lengkap.</p>
+                    </div>
+                    <div class="tip-item">
+                        <h4>⏰ Jadwal Teratur</h4>
+                        <p>3 kali makan utama dan 2 kali snack sehat setiap hari dengan waktu yang konsisten.</p>
+                    </div>
+                    <div class="tip-item">
+                        <h4>💧 Cukup Air Putih</h4>
+                        <p>Anak usia 4-8 tahun membutuhkan 1.7L air per hari, sesuaikan dengan aktivitas.</p>
+                    </div>
+                    <div class="tip-item">
+                        <h4>🚫 Batasi Gula & Garam</h4>
+                        <p>Maksimal 4 sendok teh gula dan 1 sendok teh garam per hari untuk anak.</p>
+                    </div>
+                    <div class="tip-item">
+                        <h4>🍎 Buah & Sayur Segar</h4>
+                        <p>Minimal 5 porsi buah dan sayur berwarna-warni setiap hari.</p>
+                    </div>
+                    <div class="tip-item">
+                        <h4>🥛 Susu & Produk Olahan</h4>
+                        <p>2-3 gelas susu atau produk olahan susu untuk kalsium dan protein.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Kebutuhan Harian -->
+        <div id="kebutuhan-harian" class="tab-content">
+            <div class="kebutuhan-section">
+                <h2 style="color:#2c3e50;">📊 Kebutuhan Gizi Harian Anak (Usia 7- 9 Tahun)</h2>
+                <div class="table-container">
+                    <table class="kebutuhan-table">
+                        <thead>
+                            <tr>
+                                <th>Zat Gizi</th>
+                                <th>Kebutuhan Harian</th>
+                                <th>Sumber Makanan</th>
+                                <th>Manfaat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Energi</strong></td>
+                                <td>1650 kkal</td>
+                                <td>Nasi, roti, kentang, oat</td>
+                                <td>Sumber energi untuk aktivitas</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Protein</strong></td>
+                                <td>40 gram</td>
+                                <td>Daging, ikan, telur, tempe, tahu</td>
+                                <td>Pertumbuhan dan perbaikan sel</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kalsium</strong></td>
+                                <td>1000 mg</td>
+                                <td>Susu, keju, yogurt, brokoli</td>
+                                <td>Pembentukan tulang dan gigi</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Zat Besi</strong></td>
+                                <td>10 mg</td>
+                                <td>Daging merah, bayam, kacang</td>
+                                <td>Pembentukan sel darah merah</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vitamin A</strong></td>
+                                <td>500 mcg</td>
+                                <td>Wortel, ubi, labu, mangga</td>
+                                <td>Kesehatan mata dan imun</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vitamin D</strong></td>
+                                <td>15 mg</td>
+                                <td>Jeruk, stroberi, tomat, brokoli</td>
+                                <td>Daya tahan tubuh dan antioksidan</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vitamin E</strong></td>
+                                <td>8 mg</td>
+                                <td>Jeruk, stroberi, tomat, brokoli</td>
+                                <td>Daya tahan tubuh dan antioksidan</td>
+                            </tr>
+                                                        <tr>
+                                <td><strong>Vitamin K</strong></td>
+                                <td>25 mg</td>
+                                <td>Jeruk, stroberi, tomat, brokoli</td>
+                                <td>Daya tahan tubuh dan antioksidan</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Serat</strong></td>
+                                <td>23 gram</td>
+                                <td>Buah, sayur, gandum utuh</td>
+                                <td>Pencernaan sehat</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 30px; background: #d5edff; padding: 20px; border-radius: 8px;">
+                    <h3 style="color:#2980b9; margin-top:0;">📝 Catatan Penting:</h3>
+                    <ul style="color:#2c3e50;">
+                        <li>Kebutuhan gizi dapat bervariasi berdasarkan aktivitas dan kondisi kesehatan anak</li>
+                        <li>Konsultasikan dengan ahli gizi untuk kebutuhan spesifik anak Anda</li>
+                        <li>Perhatikan tanda-tanda alergi makanan dan konsultasikan ke dokter</li>
+                        <li>Kombinasikan makanan dengan kreatif untuk meningkatkan nafsu makan</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Sembunyikan semua tab content
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Hapus active class dari semua tab buttons
+            const tabButtons = document.querySelectorAll('.nav-tab');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Tampilkan tab yang dipilih
+            document.getElementById(tabName).classList.add('active');
+            
+            // Tambah active class ke button yang diklik
+            event.currentTarget.classList.add('active');
+        }
+
+        // Tambahkan smooth scroll untuk pengalaman yang lebih baik
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animasi untuk cards
+            const cards = document.querySelectorAll('.makanan-card, .info-card, .tip-item');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

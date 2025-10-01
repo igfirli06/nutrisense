@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Info Gizi - User</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('https://source.unsplash.com/random/1600x900/?healthy-food');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        form {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        form input[type="text"],
+        form input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+
+        form button {
+            width: 100%;
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        form button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        #hasil {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            text-align: left;
+            border: 1px dashed #bdc3c7;
+        }
+
+        #hasil h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        #hasil ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #hasil ul li {
+            background-color: #ffffff;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1em;
+        }
+
+        #hasil ul li::before {
+            content: '🥦';
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        #hasil.error {
+            color: #e74c3c;
+            font-weight: bold;
+            background-color: #fdeded;
+            border-color: #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Cek Informasi Gizi</h2>
+        <form id="form">
+            Nama makanan: <input type="text" id="nama" placeholder="Contoh: Nasi, Ayam"><br>
+            Berat (gram): <input type="number" id="berat" placeholder="Contoh: 100"><br>
+            <button type="submit">Cek Gizi</button>
+        </form>
+        <div id="hasil"></div>
+    </div>
+    <script>
+        document.getElementById("form").onsubmit = async function(e) {
+            e.preventDefault();
+            let nama = document.getElementById("nama").value.trim();
+            let berat = document.getElementById("berat").value.trim();
+            let hasilDiv = document.getElementById("hasil");
+
+            hasilDiv.innerHTML = "";
+            hasilDiv.classList.remove('error');
+
+            if (!nama || !berat) {
+                hasilDiv.innerHTML = "Nama makanan dan berat harus diisi!";
+                hasilDiv.classList.add('error');
+                return;
+            }
+
+            if (isNaN(parseFloat(berat)) || parseFloat(berat) <= 0) {
+                hasilDiv.innerHTML = "Berat harus berupa angka positif.";
+                hasilDiv.classList.add('error');
+                return;
+            }
+
+            try {
+                let res = await fetch("/api/gizi", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({nama, berat: parseFloat(berat)})
+                });
+                let data = await res.json();
+                
+                if (data.error) {
+                    hasilDiv.innerText = data.error;
+                    hasilDiv.classList.add('error');
+                } else {
+                    let html = "";
+                    if (data.gambar) {
+                        html += `<img src="/static/images/${data.gambar}" alt="${data.nama}" style="width:100%;max-width:250px;border-radius:8px;margin-bottom:15px;">`;
+                    }
+                    html += `<h3>Informasi Gizi untuk ${data.berat} gram ${data.nama}</h3><ul>`;
+                    for (let k in data.gizi) {
+                        html += `<li><span>${k}:</span> <span>${data.gizi[k]}</span></li>`;
+                    }
+                    html += "</ul>";
+                    hasilDiv.innerHTML = html;
+                }
+            } catch (error) {
+                console.error("Error fetching nutrition data:", error);
+                hasilDiv.innerHTML = "Terjadi kesalahan saat mengambil data gizi. Silakan coba lagi.";
+                hasilDiv.classList.add('error');
+            }
+        }
+    </script>
+</body>
+</html>
