@@ -124,91 +124,16 @@
                 "bihun"
             ],
             "gambar": ""
+        },
+        "Nasi Tim": {
+            "deskripsi": "Kelengkapan Nasi tim\nEnergi 120 kal\nkarbohidrat 26 g\nlemak 0.4 g\nprotein 2.4 g\nserat 0.5 g\n\nNasi Tim Dori dengan Wortel Mpasi\nBahan-bahan\n 2 porsi\n3 sdm Beras\n150 g Ikan dori fillet\n200 ml Santan kental\n200 ml Air\n1 siung Bawang putih\n1 siung Bawang merah\n30 g Wortel\n1 sdm Olive oil\n\nCara Membuat\n1\nCuci beras hingga bersih, tiriskan.\n\nFoto langkah ke 1 dari resep Nasi Tim Dori dengan Wortel Mpasi.\n2\nTumis bawang putih dan bawang merah dengan olive oil hingga harum.\n\nFoto langkah ke 2 dari resep Nasi Tim Dori dengan Wortel Mpasi.\nFoto langkah ke 2 dari resep Nasi Tim Dori dengan Wortel Mpasi.\n3\nMasukkan ikan dori dan wortel, aduk hingga ikan berubah warna.\n\n4\nTambahkan beras, santan kental, dan air.\n\nFoto langkah ke 4 dari resep Nasi Tim Dori dengan Wortel Mpasi.\n5\nMasak dengan cara direbus di atas api kecil hingga nasi, ikan, dan wortel benar-benar lunak.\n\nFoto langkah ke 5 dari resep Nasi Tim Dori dengan Wortel Mpasi.\n6\nJika perlu, haluskan dengan blender atau saringan sesuai tekstur yang diinginkan.\n\n7\nSajikan hangat.\n\nFoto langkah ke 7 dari resep Nasi Tim Dori dengan Wortel Mpasi.",
+            "bahan": [
+                "beras putih"
+            ],
+            "gambar": ""
         }
     },
     "makanan": {
-        "nasi putih": {
-            "gizi": {
-                "energi": {
-                    "nilai": 180.0,
-                    "satuan": "kal"
-                },
-                "lemak": {
-                    "nilai": 0.3,
-                    "satuan": "g"
-                },
-                "protein": {
-                    "nilai": 3.0,
-                    "satuan": "g"
-                },
-                "serat": {
-                    "nilai": 0.2,
-                    "satuan": "g"
-                }
-            },
-            "gambar": "nasi_putih_nasi_putih.jpeg",
-            "kategori": "beras"
-        },
-        "nasi tim": {
-            "gizi": {
-                "Energi": {
-                    "nilai": 120.0,
-                    "satuan": "kal"
-                },
-                "karbohidrat": {
-                    "nilai": 26.0,
-                    "satuan": "g"
-                },
-                "lemak": {
-                    "nilai": 0.4,
-                    "satuan": "g"
-                },
-                "protein": {
-                    "nilai": 2.4,
-                    "satuan": "g"
-                },
-                "serat": {
-                    "nilai": 0.5,
-                    "satuan": "g"
-                }
-            },
-            "gambar": "nasi_tim_bubur-polos.jpg",
-            "kategori": "beras"
-        },
-        "nasi merah": {
-            "gizi": {
-                "Energi": {
-                    "nilai": 149.0,
-                    "satuan": "kal"
-                },
-                "Karbohidrat": {
-                    "nilai": 32.5,
-                    "satuan": "g"
-                },
-                "Lemak": {
-                    "nilai": 0.4,
-                    "satuan": "g"
-                },
-                "Protein": {
-                    "nilai": 2.8,
-                    "satuan": "g"
-                },
-                "Serat": {
-                    "nilai": 0.3,
-                    "satuan": "g"
-                },
-                "Kalsium": {
-                    "nilai": 6.0,
-                    "satuan": "mg"
-                },
-                "Fosfor": {
-                    "nilai": 6.3,
-                    "satuan": "mg"
-                }
-            },
-            "gambar": "nasi_merah_beras_merah.jpg",
-            "kategori": "beras"
-        },
         "bihun": {
             "gizi": {
                 "Energi": {
@@ -252,6 +177,378 @@
             },
             "gambar": "",
             "kategori": "sayur"
+        },
+        "beras jagung": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 358.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 5.5,
+                    "satuan": "g"
+                },
+                "lemak": {
+                    "nilai": 0.1,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 82.7,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 10.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "beras_jagung_Screenshot_2025-10-01_075624.png",
+            "kategori": "beras"
+        },
+        "beras putih": {
+            "gizi": {
+                "energi": {
+                    "nilai": 357.0,
+                    "satuan": "kal"
+                },
+                "lemak": {
+                    "nilai": 1.7,
+                    "satuan": "g"
+                },
+                "protein": {
+                    "nilai": 8.4,
+                    "satuan": "g"
+                },
+                "serat": {
+                    "nilai": 0.2,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 77.1,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "beras_putih_Screenshot_2025-10-01_075947.png",
+            "kategori": "beras"
+        },
+        "beras hitam": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 351.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 8.0,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 1.3,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 76.9,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 20.1,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "beras_hitam_Pngtreeorganic_unpolished_black_rice_discover_15243477.jpg",
+            "kategori": "beras"
+        },
+        "beras merah": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 352.0,
+                    "satuan": "kal"
+                },
+                "Fosfor": {
+                    "nilai": 257.0,
+                    "satuan": "mg"
+                },
+                "Kalsium": {
+                    "nilai": 15.0,
+                    "satuan": "mg"
+                },
+                "Karbohidrat": {
+                    "nilai": 76.2,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.9,
+                    "satuan": "g"
+                },
+                "Protein": {
+                    "nilai": 7.3,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.8,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "beras_merah_Screenshot_2025-10-01_080900.png",
+            "kategori": "beras"
+        },
+        "tepung maizena": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 341.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 0.3,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 85.0,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 7.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "tepung_maizena_Screenshot_2025-10-01_130255.png",
+            "kategori": "sayur"
+        },
+        "kacang hijau": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 323.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 22.9,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 1.5,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 56.8,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 7.5,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "kacang_hijau_Screenshot_2025-10-01_130505.png",
+            "kategori": "sayur"
+        },
+        "bayam merah": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 41.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 2.2,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.8,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 6.3,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 2.2,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "bayam_merah_Screenshot_2025-09-24_134330.png",
+            "kategori": "sayur"
+        },
+        "bayam segar": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 16.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 0.9,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.4,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 2.9,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.7,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "bayam_segar_Screenshot_2025-09-24_134255.png",
+            "kategori": "sayur"
+        },
+        "bawang bombay": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 43.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 1.4,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.2,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 10.3,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 2.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "bawang_bombay_Screenshot_2025-09-24_134215.png",
+            "kategori": "sayur"
+        },
+        "bunga turi": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 43.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 1.4,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.2,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 10.3,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 2.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "bunga_turi_Screenshot_2025-09-24_134518.png",
+            "kategori": "sayur"
+        },
+        "alpukat": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 85.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 0.9,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 6.5,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 7.7,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "alpukat_alpukat.jpeg",
+            "kategori": "buah"
+        },
+        "anggur hutan": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 30.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 0.5,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.2,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 6.8,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 1.2,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "anggur_hutan_Screenshot_2025-09-24_134022.png",
+            "kategori": "buah"
+        },
+        "apel": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 58.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 0.3,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.4,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 14.9,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 2.6,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "apel_Screenshot_2025-09-24_134101.png",
+            "kategori": "buah"
+        },
+        "arbai": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 37.0,
+                    "satuan": "kal"
+                },
+                "Karbohidrat": {
+                    "nilai": 0.8,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.5,
+                    "satuan": "g"
+                },
+                "Protein": {
+                    "nilai": 8.3,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "arbai_Screenshot_2025-09-24_134137.png",
+            "kategori": "buah"
         }
     }
 }

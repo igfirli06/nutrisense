@@ -50,38 +50,117 @@ def user_form():
 def admin_form():
     return render_template("admin.html")
 
+@app.route("/api/hitung-total", methods=["POST"])
+def hitung_total_gizi():
+    req_data = request.json
+    list_bahan = req_data.get("bahan", [])
+
+    if not list_bahan:
+        return jsonify({"error": "Daftar bahan tidak boleh kosong."}), 400
+
+    data = load_data()
+    semua_makanan = data.get("makanan", {})
+    
+    total_gizi = {}
+    satuan_info = {}
+
+    # Loop melalui setiap bahan yang dikirim dari frontend
+    for item in list_bahan:
+        nama = item.get("nama", "").lower().strip()
+        berat = float(item.get("berat", 0))
+
+        # Cari data makanan di database (harus sama persis)
+        data_makanan = semua_makanan.get(nama)
+
+        if not data_makanan:
+            return jsonify({"error": f'Bahan "{item.get("nama")}" tidak ditemukan di database. Pastikan penulisan benar.'}), 404
+        
+        # Akumulasi gizi dari bahan ini
+        for gizi_nama, gizi_data in data_makanan.get("gizi", {}).items():
+            if isinstance(gizi_data, dict) and 'nilai' in gizi_data:
+                nilai_per_100g = gizi_data['nilai']
+                satuan = gizi_data.get('satuan', 'g')
+            else: # Fallback untuk format lama
+                nilai_per_100g = gizi_data
+                satuan = 'g'
+
+            nilai_terhitung = (nilai_per_100g / 100.0) * berat
+            
+            # Tambahkan ke total
+            total_gizi[gizi_nama] = total_gizi.get(gizi_nama, 0) + nilai_terhitung
+            
+            # Simpan info satuan
+            if gizi_nama not in satuan_info:
+                satuan_info[gizi_nama] = satuan
+
+    # Bulatkan hasil akhir
+    total_gizi_rounded = {k: round(v, 2) for k, v in total_gizi.items()}
+
+    return jsonify({
+        "total_gizi": total_gizi_rounded,
+        "satuan": satuan_info
+    })
+
+
+## Perubahan Utama pada Fungsi get_gizi
+# ------------------------------------
+
 @app.route("/api/gizi", methods=["POST"])
 def get_gizi():
     req = request.json
-    nama = req.get("nama", "").lower()
+    nama_cari = req.get("nama", "").lower()
     berat = float(req.get("berat", 0))
+    
+    if not nama_cari or berat <= 0:
+        return jsonify({"error": "Nama makanan dan berat harus diisi dengan benar"}), 400
+
     data = load_data()
-    makanan = data.get("makanan", {}).get(nama)
-    if not makanan:
-        return jsonify({"error": "Makanan tidak ditemukan"}), 404
+    semua_makanan = data.get("makanan", {})
     
-    hasil = {}
-    satuan_info = {}
-    
-    for k, v in makanan["gizi"].items():
-        # Handle both old format (number) and new format (dict)
-        if isinstance(v, dict) and 'nilai' in v:
-            nilai_gizi = v['nilai']
-            satuan = v.get('satuan', 'g')
-        else:
-            nilai_gizi = v
-            satuan = 'g'  # default satuan untuk data lama
-        
-        hasil[k] = round(nilai_gizi * berat, 2)
-        satuan_info[k] = satuan
-    
-    return jsonify({
-        "nama": nama,
-        "berat": berat,
-        "gizi": hasil,
-        "satuan": satuan_info,
-        "gambar": makanan.get("gambar", "")
-    })
+    # Fungsi untuk kalkulasi gizi
+    def kalkulasi_gizi(item_makanan, berat_gram, nama_asli):
+        hasil = {}
+        satuan_info = {}
+        for k, v in item_makanan["gizi"].items():
+            if isinstance(v, dict) and 'nilai' in v:
+                nilai_gizi = v['nilai']
+                satuan = v.get('satuan', 'g')
+            else:
+                nilai_gizi = v
+                satuan = 'g'  # Default untuk data lama
+            
+            # Asumsi nilai gizi di data adalah per 100 gram
+            hasil[k] = round((nilai_gizi / 100.0) * berat_gram, 2)
+            satuan_info[k] = satuan
+            
+        return {
+            "nama": nama_asli.capitalize(),
+            "berat": berat_gram,
+            "gizi": hasil,
+            "satuan": satuan_info,
+            "gambar": item_makanan.get("gambar", "")
+        }
+
+    # Tahap 1: Cari kecocokan persis
+    makanan_persis = semua_makanan.get(nama_cari)
+    if makanan_persis:
+        hasil_tunggal = kalkulasi_gizi(makanan_persis, berat, nama_cari)
+        return jsonify({"results": [hasil_tunggal]})
+
+    # Tahap 2: Jika tidak ada, cari yang mengandung kata kunci
+    hasil_rekomendasi = []
+    for nama_makanan, data_makanan in semua_makanan.items():
+        if nama_cari in nama_makanan:
+            hasil_item = kalkulasi_gizi(data_makanan, berat, nama_makanan)
+            hasil_rekomendasi.append(hasil_item)
+
+    if hasil_rekomendasi:
+        return jsonify({"results": hasil_rekomendasi})
+
+    # Tahap 3: Jika sama sekali tidak ditemukan
+    return jsonify({"error": f"Makanan yang mengandung kata '{req.get('nama')}' tidak ditemukan"}), 404
+
+# --- (Sisa kode tidak ada perubahan, tetap sama seperti sebelumnya) ---
 
 @app.route("/api/admin/add", methods=["POST"])
 def admin_add():
@@ -99,10 +178,10 @@ def admin_add():
     gizi_satuans = request.form.getlist("gizi_satuan[]")
     
     gizi = {}
+    # Nilai gizi yang dimasukkan diasumsikan per 100 gram
     for k, v, s in zip(gizi_keys, gizi_vals, gizi_satuans):
         if k and v and s:
             try:
-                # Simpan dalam format baru dengan satuan
                 gizi[k.strip()] = {
                     "nilai": float(v),
                     "satuan": s.strip()
@@ -139,7 +218,6 @@ def admin_delete():
     nama = req.get("nama", "").lower()
     data = load_data()
     if nama in data.get("makanan", {}):
-        # Hapus gambar jika ada
         gambar = data["makanan"][nama].get("gambar")
         if gambar:
             try:
@@ -171,7 +249,6 @@ def admin_edit():
     for k, v, s in zip(gizi_keys, gizi_vals, gizi_satuans):
         if k and v and s:
             try:
-                # Simpan dalam format baru dengan satuan
                 gizi[k.strip()] = {
                     "nilai": float(v),
                     "satuan": s.strip()
@@ -187,7 +264,6 @@ def admin_edit():
     if old_nama not in data.get("makanan", {}):
         return jsonify({"success": False, "error": "Data tidak ditemukan"}), 404
 
-    # Ambil gambar lama
     makanan_data = data["makanan"][old_nama]
     gambar = makanan_data.get("gambar", "")
     if "gambar" in request.files:
@@ -197,11 +273,9 @@ def admin_edit():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             gambar = filename
 
-    # Hapus key lama jika nama diganti
     if old_nama != nama:
         del data["makanan"][old_nama]
 
-    # Simpan data baru
     data["makanan"][nama] = {
         "gizi": gizi, 
         "gambar": gambar, 
@@ -237,7 +311,6 @@ def admin_add_resep():
     if "resep" not in data:
         data["resep"] = {}
 
-    # Pastikan semua bahan dalam lowercase untuk konsistensi
     bahan_lower = [b.lower().strip() for b in bahan if b.strip()]
     
     data["resep"][judul] = {
@@ -293,11 +366,9 @@ def admin_edit_resep():
     if old_judul not in data.get("resep", {}):
         return jsonify({"success": False, "error": "Resep tidak ditemukan"}), 404
 
-    # Hapus resep lama jika judul berubah
     if old_judul != judul:
         del data["resep"][old_judul]
 
-    # Simpan resep baru
     data["resep"][judul] = {
         "deskripsi": deskripsi,
         "bahan": bahan,
@@ -307,7 +378,6 @@ def admin_edit_resep():
 
     return jsonify({"success": True})
 
-# Route untuk resep by bahan - FIXED
 @app.route("/resep/<bahan>")
 def resep_by_bahan(bahan):
     data = load_data()
@@ -316,25 +386,21 @@ def resep_by_bahan(bahan):
 
     hasil = []
     for nama_resep, info in resep.items():
-        # Cek apakah bahan ada dalam daftar bahan resep
         resep_bahan = info.get("bahan", [])
         if isinstance(resep_bahan, list) and bahan.lower() in [b.lower() for b in resep_bahan]:
             total_gizi = {}
             satuan_info = {}
-            
-            # Hitung total gizi untuk resep
             for bhn in resep_bahan:
                 if bhn in makanan:
                     for gizi_nama, gizi_data in makanan[bhn].get("gizi", {}).items():
-                        # Handle both old and new format
                         if isinstance(gizi_data, dict) and 'nilai' in gizi_data:
                             nilai = gizi_data['nilai']
                             satuan = gizi_data.get('satuan', 'g')
                         else:
                             nilai = gizi_data
                             satuan = 'g'
-                        
-                        total_gizi[gizi_nama] = total_gizi.get(gizi_nama, 0) + nilai * 100  # asumsi 100g per bahan
+
+                        total_gizi[gizi_nama] = total_gizi.get(gizi_nama, 0) + nilai
                         satuan_info[gizi_nama] = satuan
 
             hasil.append({

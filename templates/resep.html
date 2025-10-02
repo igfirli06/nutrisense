@@ -8,18 +8,20 @@
             margin: 0;
             padding: 20px;
             background-color: #f4f4f4;
+            line-height: 1.6;
         }
         .container {
             max-width: 1000px;
             margin: 0 auto;
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         h1 {
             color: #005a87;
             text-align: center;
+            margin-bottom: 20px;
         }
         .nav {
             text-align: center;
@@ -27,52 +29,68 @@
         }
         .nav a {
             display: inline-block;
-            margin: 0 10px;
-            padding: 10px 20px;
+            margin: 0 8px;
+            padding: 10px 18px;
             background: #007bff;
             color: white;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 6px;
+            transition: background 0.3s;
         }
         .nav a:hover {
             background: #0056b3;
         }
         .resep-card {
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 20px;
-            margin: 15px 0;
-            background: #f9f9f9;
+            margin: 20px 0;
+            background: #fafafa;
         }
         .resep-title {
-            font-size: 1.5em;
+            font-size: 1.6em;
+            font-weight: bold;
             color: #005a87;
             margin-bottom: 10px;
         }
-        .resep-deskripsi {
-            color: #666;
-            margin-bottom: 15px;
-            font-style: italic;
+.resep-deskripsi {
+    color: #444;
+    margin-bottom: 20px;
+    font-style: italic;
+    background: #fdfdfd;
+    padding: 10px 15px;
+    border-left: 4px solid #007bff;
+    border-radius: 6px;
+    white-space: pre-line; /* <<< ini biar enter tetap kebawah */
+}
+
+        h3 {
+            margin-top: 20px;
+            color: #333;
         }
-        .bahan-list, .gizi-list {
-            margin: 10px 0;
-            padding-left: 20px;
+        .bahan-list {
+            margin: 10px 0 20px 0;
+            padding-left: 25px;
         }
-        .bahan-list li, .gizi-list li {
-            margin: 5px 0;
+        .bahan-list li {
+            margin: 6px 0;
         }
         .gizi-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 10px 0;
+            margin: 15px 0;
+            font-size: 0.95em;
         }
         .gizi-table th, .gizi-table td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 10px;
             text-align: left;
         }
         .gizi-table th {
-            background: #f2f2f2;
+            background: #e9f2f9;
+        }
+        .gizi-table tr:nth-child(even) {
+            background: #f9f9f9;
         }
         .no-resep {
             text-align: center;
@@ -88,7 +106,6 @@
         
         <div class="nav">
             <a href="/">Home</a>
-
         </div>
 
         {% if hasil %}
@@ -97,8 +114,9 @@
             {% for r in hasil %}
             <div class="resep-card">
                 <div class="resep-title">{{ r.nama_resep }}</div>
+                
                 {% if r.deskripsi %}
-                <div class="resep-deskripsi">{{ r.deskripsi }}</div>
+                <div class="resep-deskripsi">{{ r.deskripsi | replace('\n', '<br>') | safe }}</div>
                 {% endif %}
                 
                 <h3>Bahan-bahan:</h3>
@@ -110,24 +128,24 @@
                 
                 <h3>Informasi Gizi (per porsi):</h3>
                 {% if r.gizi %}
-<table class="gizi-table">
-    <thead>
-        <tr>
-            <th>Jenis Gizi</th>
-            <th>Jumlah</th>
-            <th>Satuan</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for gizi_nama, gizi_nilai in r.gizi.items() %}
-        <tr>
-            <td>{{ gizi_nama }}</td>
-            <td>{{ gizi_nilai }}</td>
-            <td>{{ r.satuan.get(gizi_nama, 'g') }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                <table class="gizi-table">
+                    <thead>
+                        <tr>
+                            <th>Jenis Gizi</th>
+                            <th>Jumlah</th>
+                            <th>Satuan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for gizi_nama, gizi_nilai in r.gizi.items() %}
+                        <tr>
+                            <td>{{ gizi_nama }}</td>
+                            <td>{{ gizi_nilai }}</td>
+                            <td>{{ r.satuan.get(gizi_nama, 'g') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 {% else %}
                 <p style="color: #666;">Informasi gizi tidak tersedia</p>
                 {% endif %}

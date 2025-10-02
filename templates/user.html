@@ -86,6 +86,19 @@
             margin-bottom: 15px;
             font-size: 1.5em;
         }
+        
+        /* Style untuk setiap blok hasil jika ada banyak */
+        #hasil .result-item {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        #hasil .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
 
         #hasil ul {
             list-style-type: none;
@@ -124,8 +137,8 @@
     <div class="container">
         <h2>Cek Informasi Gizi</h2>
         <form id="form">
-            Nama makanan: <input type="text" id="nama" placeholder="Contoh: Nasi, Ayam"><br>
-            Berat (gram): <input type="number" id="berat" placeholder="Contoh: 100"><br>
+            Nama makanan: <input type="text" id="nama" placeholder="Contoh: Beras, Ayam"><br>
+            Berat (gram): <input type="number" id="berat" placeholder="Contoh: 150"><br>
             <button type="submit">Cek Gizi</button>
         </form>
         <div id="hasil"></div>
@@ -137,7 +150,7 @@
             let berat = document.getElementById("berat").value.trim();
             let hasilDiv = document.getElementById("hasil");
 
-            hasilDiv.innerHTML = "";
+            hasilDiv.innerHTML = "Mencari..."; // Memberi feedback ke pengguna
             hasilDiv.classList.remove('error');
 
             if (!nama || !berat) {
@@ -163,17 +176,29 @@
                 if (data.error) {
                     hasilDiv.innerText = data.error;
                     hasilDiv.classList.add('error');
-                } else {
-                    let html = "";
-                    if (data.gambar) {
-                        html += `<img src="/static/images/${data.gambar}" alt="${data.nama}" style="width:100%;max-width:250px;border-radius:8px;margin-bottom:15px;">`;
-                    }
-                    html += `<h3>Informasi Gizi untuk ${data.berat} gram ${data.nama}</h3><ul>`;
-                    for (let k in data.gizi) {
-                        html += `<li><span>${k}:</span> <span>${data.gizi[k]}</span></li>`;
-                    }
-                    html += "</ul>";
+                } else if (data.results && data.results.length > 0) {
+                    // Logika BARU: Menangani jika API mengembalikan array/daftar hasil
+                    let html = `<h3>Ditemukan ${data.results.length} hasil untuk "${nama}":</h3>`;
+                    
+                    data.results.forEach(item => {
+                        html += `<div class="result-item">`;
+                        if (item.gambar) {
+                            html += `<img src="/static/images/${item.gambar}" alt="${item.nama}" style="width:100%;max-width:250px;border-radius:8px;margin-bottom:15px;">`;
+                        }
+                        html += `<h4>Gizi untuk ${item.berat} gram ${item.nama}</h4><ul>`;
+                        for (let k in item.gizi) {
+                            // Menambahkan satuan gizi (contoh: 'g', 'mg', 'kcal')
+                            let unit = (item.satuan && item.satuan[k]) ? item.satuan[k] : '';
+                            html += `<li><span>${k}:</span> <span>${item.gizi[k]} ${unit}</span></li>`;
+                        }
+                        html += `</ul></div>`;
+                    });
                     hasilDiv.innerHTML = html;
+
+                } else {
+                    // Jika respons tidak mengandung error atau results
+                    hasilDiv.innerText = "Tidak ada data yang ditemukan.";
+                    hasilDiv.classList.add('error');
                 }
             } catch (error) {
                 console.error("Error fetching nutrition data:", error);

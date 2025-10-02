@@ -225,7 +225,7 @@
 
         <!-- Tab 1: Daftar Makanan -->
         <div id="daftar-makanan" class="tab-content active">
-            {% set kategori_list = ['buah', 'sayur', 'daging', 'beras'] %}
+            {% set kategori_list = ['buah', 'sayur', 'daging', 'beras', 'biji-bijian', 'rempah-rempah', 'umbi-umbian'] %}
             {% for kategori in kategori_list %}
                 <h3 style="color:#27ae60; margin-top:30px;">{{ kategori|title }}</h3>
                 <div class="makanan-list">
@@ -242,7 +242,7 @@
                                 </a>
                                 <ul>
                                     {% for gizi_nama, gizi_nilai in item.gizi.items() %}
-                                    <li>{{ gizi_nama|title }}: {{ gizi_nilai['nilai'] }} {{ gizi_nilai['satuan'] }} / gram</li>
+                                    <li>{{ gizi_nama|title }}: {{ gizi_nilai['nilai'] }} {{ gizi_nilai['satuan'] }}</li>
                                     {% endfor %}
                                 </ul>
 
