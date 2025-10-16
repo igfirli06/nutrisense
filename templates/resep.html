@@ -53,17 +53,16 @@
             color: #005a87;
             margin-bottom: 10px;
         }
-.resep-deskripsi {
-    color: #444;
-    margin-bottom: 20px;
-    font-style: italic;
-    background: #fdfdfd;
-    padding: 10px 15px;
-    border-left: 4px solid #007bff;
-    border-radius: 6px;
-    white-space: pre-line; /* <<< ini biar enter tetap kebawah */
-}
-
+        .resep-deskripsi {
+            color: #444;
+            margin-bottom: 20px;
+            font-style: italic;
+            background: #fdfdfd;
+            padding: 10px 15px;
+            border-left: 4px solid #007bff;
+            border-radius: 6px;
+            white-space: pre-line; /* Ini agar enter dari admin tetap tampil ke bawah */
+        }
         h3 {
             margin-top: 20px;
             color: #333;
@@ -102,18 +101,18 @@
 </head>
 <body>
     <div class="container">
-        <h1>Resep yang Mengandung: {{ bahan }}</h1>
+        <h1>Resep yang Mengandung: {{ bahan | title }}</h1>
         
         <div class="nav">
-            <a href="/">Home</a>
+            <a href="/">Kembali ke Home</a>
         </div>
 
         {% if hasil %}
-            <p>Ditemukan {{ hasil|length }} resep yang mengandung <strong>{{ bahan }}</strong>:</p>
+            <p>Ditemukan {{ hasil|length }} resep yang mengandung <strong>{{ bahan | title }}</strong>:</p>
             
             {% for r in hasil %}
             <div class="resep-card">
-                <div class="resep-title">{{ r.nama_resep }}</div>
+                <div class="resep-title">{{ r.nama_resep | title }}</div>
                 
                 {% if r.deskripsi %}
                 <div class="resep-deskripsi">{{ r.deskripsi | replace('\n', '<br>') | safe }}</div>
@@ -121,12 +120,13 @@
                 
                 <h3>Bahan-bahan:</h3>
                 <ul class="bahan-list">
+                    {# Loop ini akan menampilkan setiap bahan beserta beratnya #}
                     {% for b in r.bahan %}
-                    <li>{{ b }}</li>
+                    <li>{{ b.nama | title }} - <strong>{{ b.berat }} gram</strong></li>
                     {% endfor %}
                 </ul>
                 
-                <h3>Informasi Gizi (per porsi):</h3>
+                <h3>Informasi Gizi (Total Keseluruhan Resep):</h3>
                 {% if r.gizi %}
                 <table class="gizi-table">
                     <thead>
@@ -137,9 +137,10 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {# Loop ini menampilkan total gizi yang sudah dihitung di backend #}
                         {% for gizi_nama, gizi_nilai in r.gizi.items() %}
                         <tr>
-                            <td>{{ gizi_nama }}</td>
+                            <td>{{ gizi_nama | title }}</td>
                             <td>{{ gizi_nilai }}</td>
                             <td>{{ r.satuan.get(gizi_nama, 'g') }}</td>
                         </tr>
@@ -153,7 +154,7 @@
             {% endfor %}
         {% else %}
             <div class="no-resep">
-                <h3>Tidak ditemukan resep yang mengandung "{{ bahan }}"</h3>
+                <h3>Tidak ditemukan resep yang mengandung "{{ bahan | title }}"</h3>
                 <p>Silakan coba dengan bahan lainnya atau tambahkan resep baru di Admin Panel.</p>
             </div>
         {% endif %}

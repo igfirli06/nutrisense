@@ -215,7 +215,6 @@
     <div class="container">
         <h2>🌱 NutriSense - Pusat Informasi Gizi Anak</h2>
         
-        <!-- Navigation Tabs -->
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showTab('daftar-makanan')">🥗 Daftar Makanan</button>
             <button class="nav-tab" onclick="showTab('info-gizi')">📚 Info Gizi Anak</button>
@@ -223,16 +222,15 @@
             <button class="nav-tab" onclick="showTab('kebutuhan-harian')">📊 Kebutuhan Harian</button>
         </div>
 
-        <!-- Tab 1: Daftar Makanan -->
         <div id="daftar-makanan" class="tab-content active">
-            {% set kategori_list = ['buah', 'sayur', 'daging', 'beras', 'biji-bijian', 'rempah-rempah', 'umbi-umbian'] %}
+            {% set kategori_list = ['buah', 'sayur', 'daging', 'ikan', 'beras', 'biji-bijian', 'rempah-rempah', 'umbi-umbian'] %}
             {% for kategori in kategori_list %}
                 <h3 style="color:#27ae60; margin-top:30px;">{{ kategori|title }}</h3>
                 <div class="makanan-list">
                     {% for nama, item in makanan.items() %}
                         {% if item.get('kategori','').lower() == kategori %}
                             <div class="makanan-card">
-                                <a href="{{ url_for('resep_by_bahan', bahan=nama) }}" style="text-decoration:none; color:inherit;">
+                                <a href="{{ url_for('resep_by_bahan', bahan_utama=nama) }}" style="text-decoration:none; color:inherit;">
                                     {% if item.gambar %}
                                         <img src="{{ url_for('serve_image', filename=item.gambar) }}" alt="{{ nama }}">
                                     {% else %}
@@ -253,7 +251,6 @@
             {% endfor %}
         </div>
 
-        <!-- Tab 2: Informasi Gizi Anak -->
         <div id="info-gizi" class="tab-content">
             <div class="gizi-info-section">
                 <h2>💪 Informasi Penting Gizi untuk Anak</h2>
@@ -289,7 +286,6 @@
             </div>
         </div>
 
-        <!-- Tab 3: Tips Sehat -->
         <div id="tips-sehat" class="tab-content">
             <div class="tips-section">
                 <h2 style="color:#e74c3c;">💡 Tips Pola Makan Sehat untuk Anak</h2>
@@ -322,7 +318,6 @@
             </div>
         </div>
 
-        <!-- Tab 4: Kebutuhan Harian -->
         <div id="kebutuhan-harian" class="tab-content">
             <div class="kebutuhan-section">
                 <h2 style="color:#2c3e50;">📊 Kebutuhan Gizi Harian Anak (Usia 7- 9 Tahun)</h2>
@@ -379,7 +374,7 @@
                                 <td>Jeruk, stroberi, tomat, brokoli</td>
                                 <td>Daya tahan tubuh dan antioksidan</td>
                             </tr>
-                                                        <tr>
+                                                    <tr>
                                 <td><strong>Vitamin K</strong></td>
                                 <td>25 mg</td>
                                 <td>Jeruk, stroberi, tomat, brokoli</td>

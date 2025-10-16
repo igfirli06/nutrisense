@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, render_template, redirect, send_from_
 import json
 from werkzeug.utils import secure_filename
 
+
 app = Flask(__name__)
 
 DATA_FILE = os.path.join(os.path.dirname(__file__), "data_gizi.json")
@@ -10,8 +11,9 @@ IMAGE_FOLDER = os.path.join(os.path.dirname(__file__), "static", "images")
 os.makedirs(IMAGE_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = IMAGE_FOLDER
 
-# kategori yang diizinkan
-ALLOWED_CATEGORIES = {"buah", "sayur", "daging", "beras"}
+# KATEGORI "IKAN" TELAH DITAMBAHKAN DI SINI
+ALLOWED_CATEGORIES = {"buah", "sayur", "daging", "beras", "ikan", "biji-bijian", "umbi-umbian", "rempah-rempah"}
+
 
 def load_data():
     if not os.path.exists(DATA_FILE):
@@ -27,7 +29,6 @@ def save_data(data):
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 def convert_to_backward_compatible(gizi_data):
-    """Convert new format to old format for compatibility"""
     result = {}
     for gizi_nama, gizi_info in gizi_data.items():
         if isinstance(gizi_info, dict) and 'nilai' in gizi_info:
@@ -64,36 +65,30 @@ def hitung_total_gizi():
     total_gizi = {}
     satuan_info = {}
 
-    # Loop melalui setiap bahan yang dikirim dari frontend
     for item in list_bahan:
         nama = item.get("nama", "").lower().strip()
         berat = float(item.get("berat", 0))
 
-        # Cari data makanan di database (harus sama persis)
         data_makanan = semua_makanan.get(nama)
 
         if not data_makanan:
             return jsonify({"error": f'Bahan "{item.get("nama")}" tidak ditemukan di database. Pastikan penulisan benar.'}), 404
         
-        # Akumulasi gizi dari bahan ini
         for gizi_nama, gizi_data in data_makanan.get("gizi", {}).items():
             if isinstance(gizi_data, dict) and 'nilai' in gizi_data:
                 nilai_per_100g = gizi_data['nilai']
                 satuan = gizi_data.get('satuan', 'g')
-            else: # Fallback untuk format lama
+            else: 
                 nilai_per_100g = gizi_data
                 satuan = 'g'
 
             nilai_terhitung = (nilai_per_100g / 100.0) * berat
             
-            # Tambahkan ke total
             total_gizi[gizi_nama] = total_gizi.get(gizi_nama, 0) + nilai_terhitung
             
-            # Simpan info satuan
             if gizi_nama not in satuan_info:
                 satuan_info[gizi_nama] = satuan
 
-    # Bulatkan hasil akhir
     total_gizi_rounded = {k: round(v, 2) for k, v in total_gizi.items()}
 
     return jsonify({
@@ -101,9 +96,6 @@ def hitung_total_gizi():
         "satuan": satuan_info
     })
 
-
-## Perubahan Utama pada Fungsi get_gizi
-# ------------------------------------
 
 @app.route("/api/gizi", methods=["POST"])
 def get_gizi():
@@ -116,8 +108,7 @@ def get_gizi():
 
     data = load_data()
     semua_makanan = data.get("makanan", {})
-    
-    # Fungsi untuk kalkulasi gizi
+
     def kalkulasi_gizi(item_makanan, berat_gram, nama_asli):
         hasil = {}
         satuan_info = {}
@@ -127,9 +118,8 @@ def get_gizi():
                 satuan = v.get('satuan', 'g')
             else:
                 nilai_gizi = v
-                satuan = 'g'  # Default untuk data lama
-            
-            # Asumsi nilai gizi di data adalah per 100 gram
+                satuan = 'g'  
+
             hasil[k] = round((nilai_gizi / 100.0) * berat_gram, 2)
             satuan_info[k] = satuan
             
@@ -141,13 +131,11 @@ def get_gizi():
             "gambar": item_makanan.get("gambar", "")
         }
 
-    # Tahap 1: Cari kecocokan persis
     makanan_persis = semua_makanan.get(nama_cari)
     if makanan_persis:
         hasil_tunggal = kalkulasi_gizi(makanan_persis, berat, nama_cari)
         return jsonify({"results": [hasil_tunggal]})
 
-    # Tahap 2: Jika tidak ada, cari yang mengandung kata kunci
     hasil_rekomendasi = []
     for nama_makanan, data_makanan in semua_makanan.items():
         if nama_cari in nama_makanan:
@@ -157,10 +145,7 @@ def get_gizi():
     if hasil_rekomendasi:
         return jsonify({"results": hasil_rekomendasi})
 
-    # Tahap 3: Jika sama sekali tidak ditemukan
     return jsonify({"error": f"Makanan yang mengandung kata '{req.get('nama')}' tidak ditemukan"}), 404
-
-# --- (Sisa kode tidak ada perubahan, tetap sama seperti sebelumnya) ---
 
 @app.route("/api/admin/add", methods=["POST"])
 def admin_add():
@@ -178,7 +163,6 @@ def admin_add():
     gizi_satuans = request.form.getlist("gizi_satuan[]")
     
     gizi = {}
-    # Nilai gizi yang dimasukkan diasumsikan per 100 gram
     for k, v, s in zip(gizi_keys, gizi_vals, gizi_satuans):
         if k and v and s:
             try:
@@ -305,17 +289,24 @@ def admin_add_resep():
         return jsonify({"success": False, "error": "Judul wajib diisi"}), 400
 
     if not bahan or not isinstance(bahan, list) or len(bahan) == 0:
-        return jsonify({"success": False, "error": "Minimal satu bahan wajib dipilih"}), 400
+        return jsonify({"success": False, "error": "Minimal satu bahan wajib ada"}), 400
+
+    # Validasi setiap item di dalam list bahan
+    for item in bahan:
+        if not (isinstance(item, dict) and "nama" in item and "berat" in item):
+            return jsonify({"success": False, "error": "Format data bahan tidak valid."}), 400
+        try:
+            float(item["berat"])
+        except (ValueError, TypeError):
+            return jsonify({"success": False, "error": f"Berat untuk '{item['nama']}' harus berupa angka."}), 400
 
     data = load_data()
     if "resep" not in data:
         data["resep"] = {}
 
-    bahan_lower = [b.lower().strip() for b in bahan if b.strip()]
-    
     data["resep"][judul] = {
         "deskripsi": deskripsi,
-        "bahan": bahan_lower,
+        "bahan": bahan, 
         "gambar": ""
     }
     save_data(data)
@@ -360,59 +351,91 @@ def admin_edit_resep():
 
     if not judul or not bahan:
         return jsonify({"success": False, "error": "Judul dan bahan wajib diisi"}), 400
+    
+    # Validasi sama seperti 'add_resep'
+    for item in bahan:
+        if not (isinstance(item, dict) and "nama" in item and "berat" in item):
+            return jsonify({"success": False, "error": "Format data bahan tidak valid."}), 400
 
     data = load_data()
     
     if old_judul not in data.get("resep", {}):
         return jsonify({"success": False, "error": "Resep tidak ditemukan"}), 404
 
-    if old_judul != judul:
-        del data["resep"][old_judul]
+    resep_lama = data["resep"].pop(old_judul)
 
     data["resep"][judul] = {
         "deskripsi": deskripsi,
         "bahan": bahan,
-        "gambar": data["resep"].get(old_judul, {}).get("gambar", "")
+        "gambar": resep_lama.get("gambar", "")
     }
     save_data(data)
 
     return jsonify({"success": True})
 
-@app.route("/resep/<bahan>")
-def resep_by_bahan(bahan):
+@app.route("/resep/<bahan_utama>")
+def resep_by_bahan(bahan_utama):
     data = load_data()
-    makanan = data.get("makanan", {})
-    resep = data.get("resep", {})
+    makanan_db = data.get("makanan", {})
+    resep_db = data.get("resep", {})
 
     hasil = []
-    for nama_resep, info in resep.items():
-        resep_bahan = info.get("bahan", [])
-        if isinstance(resep_bahan, list) and bahan.lower() in [b.lower() for b in resep_bahan]:
+    for nama_resep, info in resep_db.items():
+        resep_bahan_list = info.get("bahan", [])
+        
+        bahan_ada = False
+        # === PERBAIKAN 1: Cek bahan dengan aman (bisa string atau dict) ===
+        for b in resep_bahan_list:
+            nama_bahan_resep = ""
+            if isinstance(b, dict):
+                nama_bahan_resep = b.get("nama", "").lower()
+            elif isinstance(b, str):
+                nama_bahan_resep = b.lower()
+            
+            if nama_bahan_resep == bahan_utama.lower():
+                bahan_ada = True
+                break
+
+        if bahan_ada:
             total_gizi = {}
             satuan_info = {}
-            for bhn in resep_bahan:
-                if bhn in makanan:
-                    for gizi_nama, gizi_data in makanan[bhn].get("gizi", {}).items():
-                        if isinstance(gizi_data, dict) and 'nilai' in gizi_data:
-                            nilai = gizi_data['nilai']
-                            satuan = gizi_data.get('satuan', 'g')
-                        else:
-                            nilai = gizi_data
-                            satuan = 'g'
+            
+            for bahan_item in resep_bahan_list:
+                nama_bhn = ""
+                berat_bhn = 0.0
 
-                        total_gizi[gizi_nama] = total_gizi.get(gizi_nama, 0) + nilai
-                        satuan_info[gizi_nama] = satuan
+                # === PERBAIKAN 2: Ambil nama & berat dengan aman ===
+                # Jika format baru (dict), ambil nama dan beratnya
+                if isinstance(bahan_item, dict):
+                    nama_bhn = bahan_item.get("nama", "").lower()
+                    berat_bhn = float(bahan_item.get("berat", 0))
+                # Jika format lama (str), gunakan nama itu dan asumsikan berat 100g
+                elif isinstance(bahan_item, str):
+                    nama_bhn = bahan_item.lower()
+                    berat_bhn = 100.0 # Asumsi default untuk data lama
+
+                if nama_bhn in makanan_db and berat_bhn > 0:
+                    data_makanan = makanan_db[nama_bhn]
+                    for gizi_nama, gizi_data in data_makanan.get("gizi", {}).items():
+                        nilai_per_100g = float(gizi_data.get('nilai', 0))
+                        satuan = gizi_data.get('satuan', 'g')
+                        
+                        nilai_terhitung = (nilai_per_100g / 100.0) * berat_bhn
+                        total_gizi[gizi_nama] = total_gizi.get(gizi_nama, 0) + nilai_terhitung
+                        
+                        if gizi_nama not in satuan_info:
+                            satuan_info[gizi_nama] = satuan
 
             hasil.append({
                 "nama_resep": nama_resep,
                 "deskripsi": info.get("deskripsi", ""),
-                "bahan": resep_bahan,
+                "bahan": resep_bahan_list,
                 "gizi": {k: round(v, 2) for k, v in total_gizi.items()},
                 "satuan": satuan_info,
                 "gambar": info.get("gambar", "")
             })
 
-    return render_template("resep.html", bahan=bahan, hasil=hasil)
+    return render_template("resep.html", bahan=bahan_utama, hasil=hasil)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)

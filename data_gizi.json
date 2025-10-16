@@ -117,18 +117,34 @@
         "kategori": "beras"
     },
     "resep": {
-        "Bihun Goreng Putih": {
-            "deskripsi": "informasi gizi:\nKomposisi \nair 9.0 g\nEnergi 381 g\nProtein 6.1 Kal\nLemak 3.9 g\nKarbohidrat 80.3  \nKalsium 266 mg\n\n\n250 gr Bihun\n3 butir Telur\n2 buah Dada ayam (tambahan saya), potong kotak\n5 butir Bakso (saya ganti 1 buah Fish cake), iris\n3 lembar Kol, iris\n1 genggam Taoge (tambahan saya)\n1 batang Daun bawang, potong panjang\n3 tangkai Seledri, potong kasar\n2 buah Cabe merah, iris serong\n1 sdm Kecap ikan\nSecukupnya Garam\n1/2 sdt Merica bubuk\n1 sdt Kaldu jamur\n2 sdm minyak untuk membuat telur orak arik\n2 sdm minyak untuk tumis bumbu\nBumbu Halus :\n5 siung Bawang putih\n7 buah Bawang merah\n4 biji Kemiri\n1/2 sdm Ebi (optional)\n1/2 sdt Garam\n\nCara Membuat\n 30 menit\n1\nPanaskan minyak, buat telur orak arik sampai matang, sisihkan.\n\n2\nPanaskan minyak, tumis bumbu halus sampai harum dan matang.\n\n3\nTambahkan potongan ayam, tumis sampai ayam berubah warna, tambahkan irisan bakso atau fish cake. Aduk rata.\n\n4\nTambahkan kol, daun bawang, seledri, cabe merah, kecap ikan, dan bihun. Aduk rata.\n\n5\nJika sayuran sudah agak layu, tambahkan garam, lada dan kaldu jamur. Aduk rata. Tambahkan taoge.\n\n6\nKoreksi rasa, jika sudah pas, angkat dan sajikan. Sajikan dengan sambal rawit (saya tidak buat).\n\n7\nBisa ditaburi dengan bawang goreng dan juga timun dan kerupuk.\n\n8\nAyam bisa diganti dengan udang atau bahan lain sesuai selera. Begitu juga dengan bakso atau sayuran lainnya.",
-            "bahan": [
-                "taoge",
-                "bihun"
-            ],
-            "gambar": ""
-        },
         "Nasi Tim": {
             "deskripsi": "Kelengkapan Nasi tim\nEnergi 120 kal\nkarbohidrat 26 g\nlemak 0.4 g\nprotein 2.4 g\nserat 0.5 g\n\nNasi Tim Dori dengan Wortel Mpasi\nBahan-bahan\n 2 porsi\n3 sdm Beras\n150 g Ikan dori fillet\n200 ml Santan kental\n200 ml Air\n1 siung Bawang putih\n1 siung Bawang merah\n30 g Wortel\n1 sdm Olive oil\n\nCara Membuat\n1\nCuci beras hingga bersih, tiriskan.\n\nFoto langkah ke 1 dari resep Nasi Tim Dori dengan Wortel Mpasi.\n2\nTumis bawang putih dan bawang merah dengan olive oil hingga harum.\n\nFoto langkah ke 2 dari resep Nasi Tim Dori dengan Wortel Mpasi.\nFoto langkah ke 2 dari resep Nasi Tim Dori dengan Wortel Mpasi.\n3\nMasukkan ikan dori dan wortel, aduk hingga ikan berubah warna.\n\n4\nTambahkan beras, santan kental, dan air.\n\nFoto langkah ke 4 dari resep Nasi Tim Dori dengan Wortel Mpasi.\n5\nMasak dengan cara direbus di atas api kecil hingga nasi, ikan, dan wortel benar-benar lunak.\n\nFoto langkah ke 5 dari resep Nasi Tim Dori dengan Wortel Mpasi.\n6\nJika perlu, haluskan dengan blender atau saringan sesuai tekstur yang diinginkan.\n\n7\nSajikan hangat.\n\nFoto langkah ke 7 dari resep Nasi Tim Dori dengan Wortel Mpasi.",
             "bahan": [
                 "beras putih"
+            ],
+            "gambar": ""
+        },
+        "Cumi Goreng Tepung Instant": {
+            "deskripsi": "Bahan-bahan\n400 gram cumi potong cincin\n200 gram kobe tepung kentuncky super crispy\nSecukupnya air\nMinyak untuk menggoreng\n\nCara Membuat\n 20 menit\n1. Siapkan semua bahan\n2. Ambil beberapa sendok tepung bumbu dan beri sedikit air untuk adonan basah.\n3. Masukkan cumi yang sudah dipotong cincin, aduk hingga terlumuri semua lalu gulirkan di tepung bumbu kering\n4. Remas2 hingga tepung menempel tebal lalu goreng di minyak panas hingga tepung yang menempel kering.\n5. Angkat dan tiriskan\n\nSiap sajikan",
+            "bahan": [
+                {
+                    "nama": "cumi-cumi",
+                    "berat": 400
+                }
+            ],
+            "gambar": ""
+        },
+        "Bihun Goreng Putih": {
+            "deskripsi": "informasi gizi:\nKomposisi \nair 9.0 g\nEnergi 381 g\nProtein 6.1 Kal\nLemak 3.9 g\nKarbohidrat 80.3  \nKalsium 266 mg\n\n\n250 gr Bihun\n3 butir Telur\n2 buah Dada ayam (tambahan saya), potong kotak\n5 butir Bakso (saya ganti 1 buah Fish cake), iris\n3 lembar Kol, iris\n1 genggam Taoge\n1 batang Daun bawang, potong panjang\n3 tangkai Seledri, potong kasar\n2 buah Cabe merah, iris serong\n1 sdm Kecap ikan\nSecukupnya Garam\n1/2 sdt Merica bubuk\n1 sdt Kaldu jamur\n2 sdm minyak untuk membuat telur orak arik\n2 sdm minyak untuk tumis bumbu\nBumbu Halus :\n5 siung Bawang putih\n7 buah Bawang merah\n4 biji Kemiri\n1/2 sdm Ebi (optional)\n1/2 sdt Garam\n\nCara Membuat\n 30 menit\n1\nPanaskan minyak, buat telur orak arik sampai matang, sisihkan.\n\n2\nPanaskan minyak, tumis bumbu halus sampai harum dan matang.\n\n3\nTambahkan potongan ayam, tumis sampai ayam berubah warna, tambahkan irisan bakso atau fish cake. Aduk rata.\n\n4\nTambahkan kol, daun bawang, seledri, cabe merah, kecap ikan, dan bihun. Aduk rata.\n\n5\nJika sayuran sudah agak layu, tambahkan garam, lada dan kaldu jamur. Aduk rata. Tambahkan taoge.\n\n6\nKoreksi rasa, jika sudah pas, angkat dan sajikan. Sajikan dengan sambal rawit (saya tidak buat).\n\n7\nBisa ditaburi dengan bawang goreng dan juga timun dan kerupuk.\n\n8\nAyam bisa diganti dengan udang atau bahan lain sesuai selera. Begitu juga dengan bakso atau sayuran lainnya.",
+            "bahan": [
+                {
+                    "nama": "bihun",
+                    "berat": 250
+                },
+                {
+                    "nama": "taoge",
+                    "berat": 12
+                }
             ],
             "gambar": ""
         }
@@ -549,6 +565,344 @@
             },
             "gambar": "arbai_Screenshot_2025-09-24_134137.png",
             "kategori": "buah"
+        },
+        "daging sapi gemuk": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 184.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 18.8,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 14.0,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "daging_sapi_gemuk_Screenshot_2025-10-09_110115.png",
+            "kategori": "daging"
+        },
+        "anak sapi kurus": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 174.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 19.6,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 10.0,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "anak_sapi_kurus_Screenshot_2025-09-26_104951.png",
+            "kategori": "daging"
+        },
+        "daging angsa": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 349.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 16.4,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 31.5,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "daging_angsa_Screenshot_2025-09-26_105111.png",
+            "kategori": "daging"
+        },
+        "daging ayam": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 298.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 18.2,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 25.0,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "daging_ayam_Screenshot_2025-10-09_110745.png",
+            "kategori": "daging"
+        },
+        "ayam dideh": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 75.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 13.8,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 1.9,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 0.7,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "ayam_dideh_Screenshot_2025-09-26_105528.png",
+            "kategori": "daging"
+        },
+        "belut": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 70.0,
+                    "satuan": "kal"
+                },
+                "Karbohidrat": {
+                    "nilai": 1.0,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.8,
+                    "satuan": "g"
+                },
+                "Protein": {
+                    "nilai": 14.6,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "belut_Screenshot_2025-10-16_103533.png",
+            "kategori": "ikan"
+        },
+        "cumi-cumi": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 75.0,
+                    "satuan": "kal"
+                },
+                "Karbohidrat": {
+                    "nilai": 0.1,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.7,
+                    "satuan": "g"
+                },
+                "Protein": {
+                    "nilai": 16.1,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "cumi-cumi_Screenshot_2025-10-16_103656.png",
+            "kategori": "ikan"
+        },
+        "ikan bader": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 193.0,
+                    "satuan": "kal"
+                },
+                "Karbohidrat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 13.0,
+                    "satuan": "g"
+                },
+                "Protein": {
+                    "nilai": 19.0,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "ikan_bader_Screenshot_2025-10-16_103748.png",
+            "kategori": "ikan"
+        },
+        "ikan balong": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 107.0,
+                    "satuan": "kal"
+                },
+                "Karbohidrat": {
+                    "nilai": 1.5,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 3.9,
+                    "satuan": "g"
+                },
+                "Protein": {
+                    "nilai": 16.5,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "ikan_balong_Screenshot_2025-10-16_103847.png",
+            "kategori": "ikan"
+        },
+        "ikan bambangan": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 112.0,
+                    "satuan": "kal"
+                },
+                "Protein": {
+                    "nilai": 20.0,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 1.3,
+                    "satuan": "g"
+                },
+                "Karbohidrat": {
+                    "nilai": 3.7,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "",
+            "kategori": "ikan"
+        },
+        "ikan bandeng": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 123.0,
+                    "satuan": "kal"
+                },
+                "Karbohidrat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 4.8,
+                    "satuan": "g"
+                },
+                "Protein": {
+                    "nilai": 20.0,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "ikan_bandeng_Screenshot_2025-10-16_104146.png",
+            "kategori": "ikan"
+        },
+        "ikan banjar": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 111.0,
+                    "satuan": "kal"
+                },
+                "Karbohidrat": {
+                    "nilai": 4.8,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.9,
+                    "satuan": "g"
+                },
+                "Protein": {
+                    "nilai": 19.4,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "ikan_banjar_Screenshot_2025-10-16_104822.png",
+            "kategori": "ikan"
+        },
+        "ikan baronang": {
+            "gizi": {
+                "Energi": {
+                    "nilai": 78.0,
+                    "satuan": "kal"
+                },
+                "Karbohidrat": {
+                    "nilai": 3.7,
+                    "satuan": "g"
+                },
+                "Lemak": {
+                    "nilai": 0.6,
+                    "satuan": "g"
+                },
+                "Protein": {
+                    "nilai": 14.5,
+                    "satuan": "g"
+                },
+                "Serat": {
+                    "nilai": 0.0,
+                    "satuan": "g"
+                }
+            },
+            "gambar": "ikan_baronang_Screenshot_2025-10-16_104922.png",
+            "kategori": "ikan"
         }
     }
 }
