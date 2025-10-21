@@ -9,6 +9,40 @@
             margin: 0; 
             line-height: 1.6;
         }
+        
+        /* ===== CSS UNTUK HERO BANNER BARU ===== */
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            height: 50vh; /* Tinggi banner 50% dari tinggi layar */
+            max-height: 400px; /* Tinggi maksimal */
+            overflow: hidden;
+            text-align: center;
+            color: white;
+        }
+        .hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Membuat gambar menutupi area tanpa distorsi */
+            filter: brightness(0.6); /* Membuat gambar sedikit lebih gelap agar teks terbaca */
+        }
+        .hero-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+        }
+        .hero-text h1 {
+            font-size: 3.5em;
+            margin: 0;
+        }
+        .hero-text p {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        /* ===== AKHIR CSS BANNER ===== */
+
         .container { 
             max-width: 1200px; 
             margin: 40px auto; 
@@ -16,6 +50,9 @@
             border-radius: 12px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
             padding: 30px; 
+            margin-top: -80px; /* Tarik container sedikit ke atas agar menimpa banner */
+            position: relative; /* Diperlukan agar container bisa menimpa */
+            z-index: 2;
         }
         h2 { 
             color: #2c3e50; 
@@ -179,6 +216,7 @@
         @media (max-width: 600px) {
             .makanan-list { grid-template-columns: 1fr; }
             .gizi-info-section { padding: 20px; }
+            .hero-text h1 { font-size: 2.5em; }
         }
 
         /* Navigation */
@@ -209,11 +247,52 @@
         .tab-content.active {
             display: block;
         }
+
+        /* Header dan Navigasi Tambahan */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        .main-header h2 {
+            margin: 0;
+            text-align: left;
+        }
+        .header-nav a {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .header-nav a:hover {
+            background: #5dade2;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
+    <div class="hero-banner">
+        <img src="{{ url_for('static', filename='images/banner.jpg') }}" alt="Aneka Buah dan Sayur">
+        <div class="hero-text">
+            <h1>Selamat Datang di NutriSense</h1>
+            <p>Panduan Gizi Lengkap untuk Anak Anda</p>
+        </div>
+    </div>
+
     <div class="container">
-        <h2>🌱 NutriSense - Pusat Informasi Gizi Anak</h2>
+        
+        <div class="main-header">
+            <h2>🌱 NutriSense</h2>
+            <nav class="header-nav">
+                <a href="{{ url_for('user_form') }}">Hitung Gizi Makanan</a>
+            </nav>
+        </div>
         
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showTab('daftar-makanan')">🥗 Daftar Makanan</button>
@@ -243,7 +322,6 @@
                                     <li>{{ gizi_nama|title }}: {{ gizi_nilai['nilai'] }} {{ gizi_nilai['satuan'] }}</li>
                                     {% endfor %}
                                 </ul>
-
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -374,7 +452,7 @@
                                 <td>Jeruk, stroberi, tomat, brokoli</td>
                                 <td>Daya tahan tubuh dan antioksidan</td>
                             </tr>
-                                                    <tr>
+                            <tr>
                                 <td><strong>Vitamin K</strong></td>
                                 <td>25 mg</td>
                                 <td>Jeruk, stroberi, tomat, brokoli</td>
