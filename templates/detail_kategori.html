@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <title>Kategori: {{ nama_kategori|title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 20px auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 2.5em; color: #2c3e50; }
+        .nav-kembali { display: inline-block; margin-bottom: 20px; padding: 8px 16px; background: #fff; border: 1px solid #ddd; color: #333; text-decoration: none; border-radius: 20px; font-size: 0.9em; transition: all 0.3s; }
+        .nav-kembali:hover { background: #f1f1f1; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .makanan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .makanan-card { background: #fff; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.07); overflow: hidden; text-decoration: none; color: inherit; transition: all 0.3s ease; }
+        .makanan-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .makanan-card img { width: 100%; height: 180px; object-fit: cover; }
+        .makanan-card h4 { margin: 0; padding: 20px; font-size: 1.2em; }
+        .no-items { text-align: center; color: #7f8c8d; grid-column: 1 / -1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="nav-kembali">← Kembali ke Halaman Utama</a>
+        <div class="header">
+            <h1>{{ nama_kategori|title }}</h1>
+        </div>
+
+        <div class="makanan-grid">
+            {% for makanan_item in makanan_list %}
+                <a href="{{ url_for('resep_by_bahan', bahan_utama=makanan_item.nama) }}" class="makanan-card">
+                    {% if makanan_item.gambar %}
+                        <img src="{{ url_for('serve_image', filename=makanan_item.gambar) }}" alt="{{ makanan_item.nama }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x180?text=No+Image" alt="No Image">
+                    {% endif %}
+                    <h4>{{ makanan_item.nama|title }}</h4>
+                </a>
+            {% else %}
+                <p class="no-items">Belum ada data makanan untuk kategori ini.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

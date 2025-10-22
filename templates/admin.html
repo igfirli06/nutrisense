@@ -100,7 +100,7 @@
                     <option value="">- Pilih Kategori -</option>
                     <option value="buah">Buah</option><option value="sayur">Sayur</option><option value="daging">Daging</option><option value="ikan">Ikan</option><option value="beras">Beras</option><option value="biji-bijian">Biji-bijian</option><option value="rempah-rempah">Rempah-rempah</option><option value="umbi-umbian">Umbi-Umbian</option>
                 </select>
-                <label>Data Gizi (per 100 gram):</label>
+                <label>Data Gizi (per gram):</label>
                 <div class="satuan-hint"><strong>Contoh:</strong> Energi (kal), Protein (g), Lemak (g), Karbohidrat (g), Kalsium (mg)</div>
                 <div id="gizi-fields">
                     <div class="gizi-field">
@@ -116,6 +116,20 @@
                 <button type="button" id="simpan-btn">Simpan Makanan</button>
             </form>
             <h3>Data Gizi Tersimpan</h3>
+            <div style="margin-top: 15px; margin-bottom: 10px;">
+    <label for="filter-kategori"><strong>Filter berdasarkan Kategori:</strong></label>
+    <select id="filter-kategori" onchange="loadTabelGizi()">
+        <option value="semua">- Semua Kategori -</option>
+        <option value="buah">Buah</option>
+        <option value="sayur">Sayur</option>
+        <option value="daging">Daging</option>
+        <option value="ikan">Ikan</option>
+        <option value="beras">Beras</option>
+        <option value="biji-bijian">Biji-bijian</option>
+        <option value="rempah-rempah">Rempah-rempah</option>
+        <option value="umbi-umbian">Umbi-Umbian</option>
+    </select>
+</div>
             <table id="tabel-gizi">
                 <thead><tr><th>Nama Makanan</th><th>Kategori</th><th>Nama Gizi</th><th>Nilai</th><th>Satuan</th><th>Action</th></tr></thead>
                 <tbody></tbody>
@@ -319,8 +333,144 @@
         }
     };
 
-    async function loadTabelResep() { /* ... (kode tidak berubah) ... */ }
-    async function hapusResep(judul) { /* ... (kode tidak berubah) ... */ }
+    async function loadTabelResep() {
+    try {
+        let res = await fetch("/api/admin/list_resep");
+        let data = await res.json();
+        let tbody = document.querySelector("#tabel-resep tbody");
+        tbody.innerHTML = ""; // Kosongkan tabel sebelum diisi
+
+        if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Belum ada resep yang disimpan.</td></tr>';
+            return;
+        }
+
+        data.forEach(resep => {
+            let tr = document.createElement("tr");
+
+            // Format bahan menjadi daftar list HTML
+            let bahanHtml = Array.isArray(resep.bahan) && resep.bahan.length > 0
+                ? '<ul>' + resep.bahan.map(b => `<li>${b.nama} (${b.berat}g)</li>`).join('') + '</ul>'
+                : 'Tidak ada bahan';
+
+            // Potong deskripsi agar tidak terlalu panjang di tabel
+            let deskripsiSingkat = (resep.deskripsi || '').substring(0, 70) + '...';
+
+            tr.innerHTML = `
+                <td>${resep.judul}</td>
+                <td>${deskripsiSingkat}</td>
+                <td>${bahanHtml}</td>
+                <td style="white-space: nowrap;">
+                    <button class="edit" onclick="editResep('${resep.judul}')">Edit</button>
+                    <button class="delete" onclick="hapusResep('${resep.judul}')">Hapus</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (error) {
+        console.error("Error loading resep data:", error);
+        let tbody = document.querySelector("#tabel-resep tbody");
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Gagal memuat data resep.</td></tr>';
+    }
+}
+
+    async function loadTabelGizi() {
+    try {
+        let res = await fetch("/api/admin/list");
+        let data = await res.json();
+        
+        const sortedNama = Object.keys(data).sort((a, b) => a.localeCompare(b));
+
+        // =====================================================================
+        // BAGIAN 1: Mengisi Dropdown Bahan Resep dengan SEMUA data
+        // Proses ini sekarang dijalankan lebih dulu dan menggunakan data yang belum difilter.
+        // =====================================================================
+        let bahanSelect = document.getElementById("bahan-resep-nama");
+        let editBahanSelect = document.getElementById("edit-bahan-resep-nama");
+        bahanSelect.innerHTML = `<option value="">- Pilih Makanan -</option>`;
+        editBahanSelect.innerHTML = `<option value="">- Pilih Makanan -</option>`;
+
+        // Gunakan 'sortedNama' (data asli) untuk memastikan semua bahan masuk ke dropdown.
+        sortedNama.forEach(nama => {
+            bahanSelect.innerHTML += `<option value="${nama}">${nama}</option>`;
+            editBahanSelect.innerHTML += `<option value="${nama}">${nama}</option>`;
+        });
+
+
+        // =====================================================================
+        // BAGIAN 2: Memfilter dan Menampilkan Data Gizi di Tabel
+        // Proses ini hanya akan memengaruhi tampilan tabel gizi.
+        // =====================================================================
+        let filterKategori = document.getElementById("filter-kategori").value;
+        let tbody = document.querySelector("#tabel-gizi tbody");
+        tbody.innerHTML = "";
+
+        const filteredKeys = sortedNama.filter(nama => {
+            if (filterKategori === "semua") {
+                return true;
+            }
+            return data[nama].kategori === filterKategori;
+        });
+
+        if (filteredKeys.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Tidak ada data untuk kategori ini.</td></tr>`;
+            // Kita tidak memakai 'return' di sini agar kode di bawah (jika ada) tetap berjalan
+        }
+
+        for (const nama of filteredKeys) {
+            let makanan = data[nama];
+            
+            // Perhatikan: baris untuk mengisi 'bahanSelect' sudah dipindahkan ke atas
+            
+            let first = true;
+            if (Object.keys(makanan.gizi || {}).length > 0) {
+                Object.keys(makanan.gizi).forEach((giziNama) => {
+                    let giziData = makanan.gizi[giziNama];
+                    let tr = document.createElement("tr");
+                    tr.innerHTML = `<td style="${first ? 'font-weight: bold;' : ''}">${first ? nama : ""}</td><td>${first ? makanan.kategori : ""}</td><td>${giziNama}</td><td>${giziData.nilai}</td><td>${giziData.satuan}</td><td style="white-space: nowrap;">${first ? `<button class="edit" onclick="editData('${nama}')">Edit</button><button class="delete" onclick="hapusData('${nama}')">Hapus</button>` : ""}</td>`;
+                    tbody.appendChild(tr);
+                    first = false;
+                });
+            } else {
+                let tr = document.createElement("tr");
+                tr.innerHTML = `<td style="font-weight: bold;">${nama}</td><td>${makanan.kategori}</td><td colspan="3">(Tidak ada data gizi)</td><td style="white-space: nowrap;"><button class="edit" onclick="editData('${nama}')">Edit</button><button class="delete" onclick="hapusData('${nama}')">Hapus</button></td>`;
+                tbody.appendChild(tr);
+            }
+        }
+    } catch (error) {
+        console.error("Error loading gizi data:", error);
+    }
+}
+    async function hapusResep(judul) {
+    // 1. Minta konfirmasi kepada pengguna sebelum menghapus
+    if (!confirm(`Apakah Anda yakin ingin menghapus resep '${judul}'?`)) {
+        return; // Jika pengguna klik "Batal", hentikan fungsi
+    }
+
+    try {
+        // 2. Kirim permintaan ke server untuk menghapus resep
+        let res = await fetch("/api/admin/delete_resep", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ judul: judul }) // Kirim judul resep yang akan dihapus
+        });
+
+        let data = await res.json();
+
+        // 3. Tampilkan pesan berdasarkan respons dari server
+        if (data.success) {
+            showInfo("Resep berhasil dihapus!", "success");
+            loadTabelResep(); // Muat ulang tabel resep untuk menampilkan perubahan
+        } else {
+            showInfo("Gagal menghapus resep: " + (data.error || "Terjadi kesalahan"), "error");
+        }
+    } catch (error) {
+        console.error("Error saat menghapus resep:", error);
+        showInfo("Gagal menghubungi server.", "error");
+    }
+}
     
     // JAVASCRIPT UMUM (TIDAK BERUBAH)
     function showInfo(message, type) { let infoDiv = document.getElementById("global-info"); window.scrollTo({ top: 0, behavior: 'smooth' }); infoDiv.innerHTML = `<div class="info ${type}">${message}</div>`; setTimeout(() => { infoDiv.innerHTML = ''; }, 5000); }

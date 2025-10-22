@@ -3,41 +3,26 @@ from flask import Flask, request, jsonify, render_template, send_from_directory
 from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
-import json # Pastikan json diimpor di bagian atas file Anda
-from werkzeug.utils import secure_filename # Pastikan ini juga diimpor
-
-# =================================================================================
-# KONFIGURASI APLIKASI
-# =================================================================================
-
+import json 
+from werkzeug.utils import secure_filename 
 app = Flask(__name__)
 
-# --- ⚙️ KONFIGURASI DATABASE POSTGRESQL ---
-# Ganti nilai di bawah ini sesuai dengan konfigurasi PostgreSQL Anda di pgAdmin
 DB_USER = "postgres"
-DB_PASSWORD = "password354160"  # <-- GANTI DENGAN PASSWORD ANDA
+DB_PASSWORD = "password354160"  
 DB_HOST = "localhost"
 DB_PORT = "5432"
-DB_NAME = "nutrisense"           # <-- NAMA DATABASE YANG ANDA BUAT
+DB_NAME = "nutrisense"           
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# --- KONFIGURASI FOLDER UPLOAD ---
 IMAGE_FOLDER = os.path.join(os.path.dirname(__file__), "static", "images")
 os.makedirs(IMAGE_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = IMAGE_FOLDER
 
-# --- Inisialisasi SQLAlchemy ---
 db = SQLAlchemy(app)
 
-# --- Kategori yang diizinkan ---
 ALLOWED_CATEGORIES = {"buah", "sayur", "daging", "beras", "ikan", "biji-bijian", "umbi-umbian", "rempah-rempah"}
-
-
-# =================================================================================
-# MODEL DATABASE (Struktur Tabel)
-# =================================================================================
 
 class Makanan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -74,15 +59,65 @@ class BahanResep(db.Model):
     makanan_id = db.Column(db.Integer, db.ForeignKey('makanan.id'), nullable=False)
     makanan_obj = db.relationship('Makanan', lazy='joined')
 
-
-# =================================================================================
-# ROUTES UNTUK TAMPILAN (FRONTEND)
-# =================================================================================
-
 @app.route("/")
 def index():
+    # Ambil parameter 'kategori' dari URL, jika ada
+    selected_kategori = request.args.get('kategori')
+    
+    # Query semua makanan dari database dan ubah menjadi dictionary
     makanan_dict = {m.nama: m.to_dict() for m in Makanan.query.order_by(Makanan.nama).all()}
-    return render_template("index.html", makanan=makanan_dict)
+    
+    # Kirim data makanan dan kategori yang dipilih ke template
+    return render_template("index.html", makanan=makanan_dict, selected_kategori=selected_kategori)
+
+@app.route('/kalkulator')
+def form_kalkulator():
+    # Hanya menampilkan halaman HTML tanpa ada data hasil
+    return render_template('kalkulator.html')
+
+@app.route('/hitung', methods=['POST'])
+def hitung_gizi():
+    try:
+        # 1. Ambil data dari form dan konversi ke tipe data yang benar
+        umur = int(request.form.get('umur'))
+        berat = float(request.form.get('berat'))
+        tinggi = float(request.form.get('tinggi'))
+        gender = request.form.get('gender')
+        faktor_aktivitas = float(request.form.get('aktivitas'))
+
+        # 2. Hitung BMR (Basal Metabolic Rate) dengan rumus Harris-Benedict
+        bmr = 0
+        if gender == 'pria':
+            # Rumus untuk laki-laki
+            bmr = 88.362 + (13.397 * berat) + (4.799 * tinggi) - (5.677 * umur)
+        elif gender == 'wanita':
+            # Rumus untuk perempuan
+            bmr = 447.593 + (9.247 * berat) + (3.098 * tinggi) - (4.330 * umur)
+
+        # 3. Hitung TDEE (Total Daily Energy Expenditure / Kebutuhan Kalori Harian)
+        tdee = bmr * faktor_aktivitas
+
+        # 4. Hitung kebutuhan makronutrien (protein 15%, karbohidrat 60%, lemak 25%)
+        # 1 gram protein = 4 kkal, 1 gram karbohidrat = 4 kkal, 1 gram lemak = 9 kkal
+        protein = (tdee * 0.15) / 4
+        karbohidrat = (tdee * 0.60) / 4
+        lemak = (tdee * 0.25) / 9
+        
+        # Siapkan data hasil untuk dikirim ke template
+        hasil = {
+            "kalori": round(tdee),
+            "protein": round(protein),
+            "karbohidrat": round(karbohidrat),
+            "lemak": round(lemak)
+        }
+        
+        # Kirim data input dan hasil perhitungan ke template untuk ditampilkan
+        return render_template('kalkulator.html', hasil=hasil, input_data=request.form)
+
+    except (ValueError, TypeError):
+        # Jika user memasukkan data yang tidak valid (misal: teks bukan angka)
+        error_message = "Input tidak valid. Pastikan semua kolom diisi dengan angka."
+        return render_template('kalkulator.html', error=error_message)
 
 @app.route("/user")
 def user_form():
@@ -95,7 +130,6 @@ def admin_form():
 
 @app.route("/resep/<bahan_utama>")
 def resep_by_bahan(bahan_utama):
-    # Query resep yang mengandung bahan utama menggunakan JOIN
     list_resep = Resep.query.join(BahanResep).join(Makanan).filter(Makanan.nama == bahan_utama.lower()).all()
     
     hasil = []
@@ -105,23 +139,31 @@ def resep_by_bahan(bahan_utama):
         bahan_list_for_template = []
 
         for bahan in resep.bahan_entries:
-            bahan_list_for_template.append({"nama": bahan.makanan_obj.nama, "berat": bahan.berat})
+            # Mengumpulkan data gizi mentah (per 100g) untuk setiap bahan
+            gizi_per_bahan = {
+                g.nama_gizi: {"nilai": g.nilai, "satuan": g.satuan} 
+                for g in bahan.makanan_obj.gizi_entries
+            }
+
+            bahan_list_for_template.append({
+                "nama": bahan.makanan_obj.nama, 
+                "berat": bahan.berat,
+                "gizi_mentah": gizi_per_bahan  # Data ini akan dikirim ke template
+            })
+
+            # Menghitung total gizi untuk resep
             for gizi_item in bahan.makanan_obj.gizi_entries:
-                nilai_terhitung = (gizi_item.nilai / 100.0) * bahan.berat
+                nilai_terhitung = gizi_item.nilai * bahan.berat
                 total_gizi[gizi_item.nama_gizi] = total_gizi.get(gizi_item.nama_gizi, 0) + nilai_terhitung
                 if gizi_item.nama_gizi not in satuan_info:
                     satuan_info[gizi_item.nama_gizi] = gizi_item.satuan
-        
-        # --- PENAMBAHAN BARU DI SINI ---
-        # Ambil deskripsi dan ubah menjadi daftar langkah-langkah
+    
         deskripsi_teks = resep.deskripsi or ""
-        # Pecah teks berdasarkan baris baru, dan hapus baris yang kosong
         langkah_langkah = [langkah.strip() for langkah in deskripsi_teks.split('\n') if langkah.strip()]
-        # --- AKHIR PENAMBAHAN ---
 
         hasil.append({
             "nama_resep": resep.judul,
-            "langkah": langkah_langkah,  # Kirim daftar langkah ke template
+            "langkah": langkah_langkah,  
             "bahan": bahan_list_for_template,
             "gizi": {k: round(v, 2) for k, v in total_gizi.items()},
             "satuan": satuan_info,
@@ -130,12 +172,18 @@ def resep_by_bahan(bahan_utama):
 
     return render_template("resep.html", bahan=bahan_utama, hasil=hasil)
 
+# Tambahkan fungsi baru ini di app.py
 
-# =================================================================================
-# API ENDPOINTS (UNTUK JAVASCRIPT)
-# =================================================================================
+@app.route("/kategori/<nama_kategori>")
+def tampilkan_kategori(nama_kategori):
+    # Cari semua makanan yang cocok dengan kategori yang dipilih
+    makanan_dalam_kategori = Makanan.query.filter_by(kategori=nama_kategori).order_by(Makanan.nama).all()
+    
+    # Kirim daftar makanan tersebut ke template baru
+    return render_template("detail_kategori.html", 
+                           makanan_list=makanan_dalam_kategori, 
+                           nama_kategori=nama_kategori)
 
-# --- API untuk Kalkulasi Gizi ---
 @app.route("/api/hitung-total", methods=["POST"])
 def hitung_total_gizi():
     list_bahan = request.json.get("bahan", [])
@@ -190,7 +238,6 @@ def get_gizi():
 
     return jsonify({"error": f"Makanan '{req.get('nama')}' tidak ditemukan"}), 404
 
-# --- API CRUD untuk Makanan ---
 @app.route("/api/admin/list")
 def admin_list_makanan():
     return jsonify({m.nama: m.to_dict() for m in Makanan.query.all()})
@@ -278,7 +325,6 @@ def admin_delete_makanan():
         return jsonify({"success": True})
     return jsonify({"success": False, "error": "Data tidak ditemukan"}), 404
 
-# --- API CRUD untuk Resep ---
 @app.route("/api/admin/list_resep")
 def admin_list_resep():
     resep_list = []
@@ -287,16 +333,14 @@ def admin_list_resep():
             "judul": resep.judul,
             "deskripsi": resep.deskripsi,
             "bahan": [{"nama": b.makanan_obj.nama, "berat": b.berat} for b in resep.bahan_entries],
-            "gambar": resep.gambar or ""  # TAMBAHKAN INI untuk mengirim nama file gambar
+            "gambar": resep.gambar or ""  
         })
     return jsonify(resep_list)
 
 @app.route("/api/admin/add_resep", methods=["POST"])
 def admin_add_resep():
-    # Mengambil data dari form, bukan JSON
     judul = request.form.get("judul", "").strip()
     deskripsi = request.form.get("deskripsi", "").strip()
-    # Mengambil string JSON bahan dan mengubahnya menjadi list python
     bahan_str = request.form.get("bahan", "[]")
     try:
         bahan = json.loads(bahan_str)
@@ -306,16 +350,13 @@ def admin_add_resep():
     if not judul or not bahan:
         return jsonify({"success": False, "error": "Judul dan bahan wajib diisi"}), 400
 
-    # Proses upload gambar
     gambar_filename = ""
     if "gambar" in request.files:
         file = request.files["gambar"]
         if file and file.filename:
-            # Gunakan judul resep untuk nama file agar unik
             gambar_filename = secure_filename(f"resep_{judul}_{file.filename}")
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], gambar_filename))
 
-    # Simpan ke database (Model Resep Anda)
     new_resep = Resep(
         judul=judul,
         deskripsi=deskripsi,
@@ -358,20 +399,16 @@ def admin_edit_resep():
     if not resep.judul or not bahan_baru:
         return jsonify({"success": False, "error": "Judul dan bahan wajib diisi"}), 400
 
-    # Handle gambar baru
     if "gambar" in request.files:
         file = request.files["gambar"]
         if file and file.filename:
-            # Hapus gambar lama jika ada
             if resep.gambar and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], resep.gambar)):
                 os.remove(os.path.join(app.config['UPLOAD_FOLDER'], resep.gambar))
             
-            # Simpan gambar baru
             gambar_filename = secure_filename(f"resep_{resep.judul}_{file.filename}")
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], gambar_filename))
             resep.gambar = gambar_filename
 
-    # Hapus bahan lama dan tambahkan yang baru
     BahanResep.query.filter_by(resep_id=resep.id).delete()
     for item in bahan_baru:
         makanan = Makanan.query.filter_by(nama=item.get("nama", "").lower()).first()
@@ -390,7 +427,6 @@ def admin_delete_resep():
     judul = request.json.get("nama", "").strip()
     resep = Resep.query.filter_by(judul=judul).first()
     if resep:
-        # Hapus file gambar terkait jika ada
         if resep.gambar and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], resep.gambar)):
             try:
                 os.remove(os.path.join(app.config['UPLOAD_FOLDER'], resep.gambar))
@@ -406,15 +442,5 @@ def admin_delete_resep():
 def serve_image(filename):
     return send_from_directory(IMAGE_FOLDER, filename)
 
-
-# =================================================================================
-# MENJALANKAN APLIKASI
-# =================================================================================
-
 if __name__ == "__main__":
-    # Penting: Pastikan Anda sudah membuat tabel di database sebelum menjalankan aplikasi
-    # Buka terminal Python dan jalankan:
-    # from app import app, db
-    # with app.app_context():
-    #     db.create_all()
-    app.run(debug=False) # Gunakan debug=True untuk pengembangan
+    app.run(debug=False) 
