@@ -1,190 +1,197 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <meta charset="UTF-8">
     <title>NutriSense - Panduan Gizi Anak</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- FONT -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- GSAP Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
     <style>
-        /* ======================================= */
-/* ===== CSS BARU YANG SUDAH DIPERBAIKI ===== */
-/* ======================================= */
+        /* ========== DASAR ========== */
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+            background-color: #f8f9fa;
+        }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    scroll-behavior: smooth;
-    background-color: #f8f9fa; /* Memberi warna dasar body */
-}
+        /* ========== HERO / BANNER ========== */
+        .hero-section {
+            height: 100vh;
+            color: white;
+            background: url("{{ url_for('static', filename='images/banner.jpg') }}") no-repeat center center/cover;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+        }
+        .hero-content h1 {
+            font-size: 4em;
+            margin-bottom: 10px;
+            font-family: 'Caprasimo', cursive;
+            display: inline-block;
+        }
+        .hero-content p {
+            font-size: 1.5em;
+        }
+        .scroll-down-arrow {
+            position: absolute;
+            bottom: 30px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 3em;
+            color: white;
+            text-decoration: none;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+            40% { transform: translate(-50%, -20px); }
+            60% { transform: translate(-50%, -10px); }
+        }
 
-/* Pengaturan Section Umum */
-.section {
-    width: 100%;
-    /* Hapus height: 100vh agar tinggi fleksibel */
-    min-height: 90vh; /* Minimal setinggi layar agar tidak aneh */
-    height: auto; /* Tinggi mengikuti konten */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* Tetap center untuk section yg kontennya sedikit */
-    position: relative;
-    box-sizing: border-box;
-    padding: 60px 40px; /* Padding atas-bawah lebih besar */
-}
+        .section {
+            width: 100%;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 40px;
+            box-sizing: border-box;
+        }
 
-/* ===== Section 1: BANNER (Dibuat Khusus Fullscreen) ===== */
-.hero-section {
-    height: 100vh; /* HANYA banner yang tingginya 100% layar */
-    min-height: 100vh;
-    color: white;
-    background: url("{{ url_for('static', filename='images/banner.jpg') }}") no-repeat center center/cover;
-}
-.hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-.hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
-}
-.hero-content h1 { font-size: 4em; margin-bottom: 10px; }
-.hero-content p { font-size: 1.5em; }
-.scroll-down-arrow {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 3em;
-    color: white;
-    text-decoration: none;
-    animation: bounce 2s infinite;
-}
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
-    40% { transform: translate(-50%, -20px); }
-    60% { transform: translate(-50%, -10px); }
-}
+        /* ========== KATEGORI MAKANAN ========== */
+        .kategori-section {
+            background-color: #f8f9fa;
+        }
+        .kategori-section h2, .info-section h2 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .kategori-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .kategori-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .kategori-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            color: #3498db;
+        }
 
-/* ===== Section 2: KATEGORI MAKANAN ===== */
-.kategori-section {
-    background-color: #f8f9fa;
-}
-.kategori-section h2, .info-section h2 {
-    font-size: 2.5em;
-    color: #2c3e50;
-    margin-bottom: 40px;
-    text-align: center;
-}
-.kategori-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
-    width: 100%;
-    max-width: 1200px;
-}
-.kategori-card {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.07);
-    text-decoration: none;
-    color: #333;
-    font-size: 1.2em;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-.kategori-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    color: #3498db;
-}
+        .info-section {
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1400px;
+        }
+        .info-content { flex: 1; }
+        .table-container { overflow-x: auto; }
+        .kebutuhan-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+        }
+        .kebutuhan-table th, .kebutuhan-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .kebutuhan-table th { background: #3498db; color: white; }
 
-/* ===== Section 3: INFO GIZI & HITUNG GIZI ===== */
-.info-section {
-    background-color: #ffffff;
-    display: flex;
-    flex-direction: row; /* Kembali ke row untuk desktop */
-    gap: 40px;
-    align-items: flex-start;
-    width: 100%;
-    max-width: 1400px;
-}
-.info-content {
-    flex: 1;
-}
-.table-container { overflow-x: auto; }
-.kebutuhan-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.07); }
-.kebutuhan-table th, .kebutuhan-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
-.kebutuhan-table th { background: #3498db; color: white; }
+        .kanan-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            flex-basis: 400px;
+            flex-shrink: 0;
+        }
+        .hitung-gizi-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+        }
+        .hitung-gizi-box h3 { font-size: 1.8em; margin-top: 0; }
+        .hitung-gizi-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: white;
+            color: #667eea;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        .hitung-gizi-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
 
-/* Wrapper untuk 2 box di kanan */
-.kanan-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 25px; /* Jarak antar box */
-    flex-basis: 400px;
-    flex-shrink: 0; /* Mencegah box menyusut */
-}
-.hitung-gizi-box {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 30px;
-    border-radius: 12px;
-    color: white;
-    text-align: center;
-}
-.hitung-gizi-box h3 { font-size: 1.8em; margin-top: 0; color: white; }
-.hitung-gizi-box p { font-size: 1.1em; }
-.hitung-gizi-btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 15px 30px;
-    background: white;
-    color: #667eea;
-    font-size: 1.1em;
-    font-weight: bold;
-    text-decoration: none;
-    border-radius: 50px;
-    transition: all 0.3s ease;
-}
-.hitung-gizi-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
+        .footer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 25px;
+        }
 
-/* ===== FOOTER ===== */
-.footer {
-    background: #2c3e50;
-    color: #ecf0f1;
-    text-align: center;
-    padding: 25px;
-    height: auto; 
-    min-height: auto; /* Override min-height dari .section */
-}
-
-/* ===== Responsive Media Queries ===== */
-@media (max-width: 900px) {
-    .section {
-        padding: 50px 20px;
-    }
-    .kategori-grid { grid-template-columns: repeat(2, 1fr); }
-    .info-section {
-        flex-direction: column;
-        align-items: center;
-    }
-    .kanan-wrapper {
-        width: 100%;
-        max-width: 500px;
-    }
-}
+        @media (max-width: 900px) {
+            .section { padding: 50px 20px; }
+            .kategori-grid { grid-template-columns: repeat(2, 1fr); }
+            .info-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            .kanan-wrapper {
+                width: 100%;
+                max-width: 500px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -211,48 +218,51 @@ html, body {
     </section>
 
     <section class="section info-section" id="info">
-    <div class="info-content">
-        <h2>Kebutuhan Gizi Harian Anak</h2>
-        <div class="table-container">
-            <table class="kebutuhan-table">
-                <thead>
-                    <tr>
-                        <th>Zat Gizi</th>
-                        <th>Kebutuhan Harian (7-9 Tahun)</th>
-                        <th>Sumber Makanan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td><strong>Energi</strong></td><td>1650 kkal</td><td>Nasi, roti, kentang</td></tr>
-                    <tr><td><strong>Protein</strong></td><td>40 gram</td><td>Daging, ikan, telur, tempe</td></tr>
-                    <tr><td><strong>Kalsium</strong></td><td>1000 mg</td><td>Susu, keju, yogurt</td></tr>
-                    <tr><td><strong>Zat Besi</strong></td><td>10 mg</td><td>Daging merah, bayam</td></tr>
-                    <tr><td><strong>Vitamin A</strong></td><td>500 mcg</td><td>Wortel, ubi, mangga</td></tr>
-                    <tr><td><strong>Vitamin C</strong></td><td>45 mg</td><td>Jeruk, stroberi, tomat</td></tr>
-                </tbody>
-            </table>
+        <div class="info-content">
+            <h2>Kebutuhan Gizi Harian Anak</h2>
+            <div class="table-container">
+                <table class="kebutuhan-table">
+                    <thead>
+                        <tr>
+                            <th>Zat Gizi</th>
+                            <th>Kebutuhan Harian (7-9 Tahun)</th>
+                            <th>Sumber Makanan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Energi</strong></td><td>1650 kkal</td><td>Nasi, roti, kentang</td></tr>
+                        <tr><td><strong>Protein</strong></td><td>40 gram</td><td>Daging, ikan, telur, tempe</td></tr>
+                        <tr><td><strong>Kalsium</strong></td><td>1000 mg</td><td>Susu, keju, yogurt</td></tr>
+                        <tr><td><strong>Zat Besi</strong></td><td>10 mg</td><td>Daging merah, bayam</td></tr>
+                        <tr><td><strong>Vitamin A</strong></td><td>500 mcg</td><td>Wortel, ubi, mangga</td></tr>
+                        <tr><td><strong>Vitamin C</strong></td><td>45 mg</td><td>Jeruk, stroberi, tomat</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <div class="kanan-wrapper" style="display: flex; flex-direction: column; gap: 20px; flex-basis: 400px; max-width: 400px;">
-
-        <div class="hitung-gizi-box">
-            <h3>Cek Kandungan Gizi</h3>
-            <p>Hitung total gizi dari resep atau bahan makanan Anda.</p>
-            <a href="{{ url_for('user_form') }}" class="hitung-gizi-btn">Mulai Cek Sekarang</a>
+        <div class="kanan-wrapper">
+            <div class="hitung-gizi-box">
+                <h3>Cek Kandungan Gizi</h3>
+                <p>Hitung total gizi dari resep atau bahan makanan Anda.</p>
+                <a href="{{ url_for('user_form') }}" class="hitung-gizi-btn">Mulai Cek Sekarang</a>
+            </div>
+            <div class="hitung-gizi-box">
+                <h3>Kalkulator</h3>
+                <p>Hitung estimasi kebutuhan gizi harian Anda di sini.</p>
+                <a href="{{ url_for('form_kalkulator') }}" class="hitung-gizi-btn">Mulai Hitung</a>
+            </div>
         </div>
-        <div class="hitung-gizi-box">
-            <h3>Kalkulator</h3>
-            <p>Hitung estimasi kebutuhan gizi harian Anda di sini.</p>
-            <a href="{{ url_for('form_kalkulator') }}" class="hitung-gizi-btn">Mulai Hitung</a>
-        </div>
-        </div>
-    </div>
-</section>
+    </section>
 
     <footer class="footer">
         <p>&copy; 2025 NutriSense. Semua Hak Cipta Dilindungi.</p>
     </footer>
+
+    <script>
+        gsap.from(".hero-content h1", { duration: 2, y: -100, opacity: 0, ease: "bounce" });
+        gsap.from(".hero-content p", { duration: 2, delay: 0.5, y: 50, opacity: 0, ease: "power3.out" });
+    </script>
 
 </body>
 </html>
