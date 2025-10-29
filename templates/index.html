@@ -4,26 +4,22 @@
     <meta charset="UTF-8">
     <title>NutriSense - Panduan Gizi Anak</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- FONT -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <!-- GSAP Animation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
     <style>
-        /* ========== DASAR ========== */
         html, body {
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
             scroll-behavior: smooth;
-            background-color: #f8f9fa;
+            background-color: #0a192f; /* Navy Background */
+            color: #ccd6f6; /* Light text color */
         }
 
-        /* ========== HERO / BANNER ========== */
         .hero-section {
             height: 100vh;
             color: white;
@@ -37,7 +33,7 @@
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(2, 12, 27, 0.7); /* Darker navy overlay */
         }
         .hero-content {
             position: relative;
@@ -80,13 +76,12 @@
             box-sizing: border-box;
         }
 
-        /* ========== KATEGORI MAKANAN ========== */
         .kategori-section {
-            background-color: #f8f9fa;
+            background-color: #0a192f; /* Navy Background */
         }
         .kategori-section h2, .info-section h2 {
             font-size: 2.5em;
-            color: #2c3e50;
+            color: #e6f1ff; /* Brighter text for headers */
             margin-bottom: 40px;
             text-align: center;
         }
@@ -98,25 +93,25 @@
             max-width: 1200px;
         }
         .kategori-card {
-            background: white;
+            background: #112240; /* Lighter navy for cards */
             border-radius: 10px;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             text-decoration: none;
-            color: #333;
+            color: #ccd6f6;
             font-size: 1.2em;
             font-weight: 600;
             transition: all 0.3s ease;
         }
         .kategori-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            color: #3498db;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            color: #64ffda; /* Accent color on hover */
         }
 
         .info-section {
-            background-color: #ffffff;
+            background-color: #112240; /* Lighter navy for section */
             display: flex;
             flex-direction: row;
             gap: 40px;
@@ -129,17 +124,20 @@
         .kebutuhan-table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
+            background: #0a192f;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         .kebutuhan-table th, .kebutuhan-table td {
             padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #172a45; /* Darker border for contrast */
         }
-        .kebutuhan-table th { background: #3498db; color: white; }
+        .kebutuhan-table th {
+            background: #172a45;
+            color: #e6f1ff;
+        }
 
         .kanan-wrapper {
             display: flex;
@@ -174,8 +172,8 @@
         }
 
         .footer {
-            background: #2c3e50;
-            color: #ecf0f1;
+            background: #0a192f;
+            color: #a8b2d1; /* Softer text for footer */
             text-align: center;
             padding: 25px;
         }
@@ -208,7 +206,7 @@
     <section class="section kategori-section" id="kategori">
         <h2>Pilih Kategori Makanan</h2>
         <div class="kategori-grid">
-            {% set kategori_list = ['buah', 'sayur', 'daging', 'ikan', 'beras', 'biji-bijian', 'rempah-rempah', 'umbi-umbian'] %}
+            {% set kategori_list = ['buah', 'sayur', 'daging', 'ikan', 'beras', 'biji-bijian', 'rempah-rempah', 'umbi-umbian', 'olahan-produk'] %}
             {% for kategori_item in kategori_list %}
             <a href="{{ url_for('tampilkan_kategori', nama_kategori=kategori_item) }}" class="kategori-card">
                 {{ kategori_item|title }}

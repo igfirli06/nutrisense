@@ -11,7 +11,7 @@ DB_USER = "postgres"
 DB_PASSWORD = "password354160"  
 DB_HOST = "localhost"
 DB_PORT = "5432"
-DB_NAME = "nutrisense"           
+DB_NAME = "nutrisense"          
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -22,7 +22,7 @@ app.config['UPLOAD_FOLDER'] = IMAGE_FOLDER
 
 db = SQLAlchemy(app)
 
-ALLOWED_CATEGORIES = {"buah", "sayur", "daging", "beras", "ikan", "biji-bijian", "umbi-umbian", "rempah-rempah"}
+ALLOWED_CATEGORIES = {"buah", "sayur", "daging", "beras", "ikan", "biji-bijian", "umbi-umbian", "rempah-rempah", "olahan-produk"}
 
 class Makanan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -153,11 +153,11 @@ def resep_by_bahan(bahan_utama):
 
             # Menghitung total gizi untuk resep
             for gizi_item in bahan.makanan_obj.gizi_entries:
-                nilai_terhitung = gizi_item.nilai * bahan.berat
+                nilai_terhitung = gizi_item.nilai * (bahan.berat / 100.0) # Koreksi perhitungan gizi resep
                 total_gizi[gizi_item.nama_gizi] = total_gizi.get(gizi_item.nama_gizi, 0) + nilai_terhitung
                 if gizi_item.nama_gizi not in satuan_info:
                     satuan_info[gizi_item.nama_gizi] = gizi_item.satuan
-    
+        
         deskripsi_teks = resep.deskripsi or ""
         langkah_langkah = [langkah.strip() for langkah in deskripsi_teks.split('\n') if langkah.strip()]
 
@@ -262,9 +262,42 @@ def admin_add_makanan():
         gizi_keys = request.form.getlist("gizi_nama[]")
         gizi_vals = request.form.getlist("gizi_nilai[]")
         gizi_satuans = request.form.getlist("gizi_satuan[]")
+
+        # --- LOGIKA INI SUDAH BENAR ---
         for k, v, s in zip(gizi_keys, gizi_vals, gizi_satuans):
-            if k and v and s:
-                db.session.add(Gizi(nama_gizi=k.strip(), nilai=float(v), satuan=s.strip(), makanan=new_makanan))
+            nama_gizi_bersih = k.strip()
+            nilai_str_bersih = v.strip().replace(",", ".") 
+            satuan_bersih = s.strip()
+
+            # Kasus 1: Semua terisi
+            if nama_gizi_bersih and nilai_str_bersih and satuan_bersih:
+                try:
+                    nilai_float = float(nilai_str_bersih)
+                    db.session.add(Gizi(
+                        nama_gizi=nama_gizi_bersih, 
+                        nilai=nilai_float, 
+                        satuan=satuan_bersih, 
+                        makanan=new_makanan
+                    ))
+                except ValueError:
+                    db.session.rollback()
+                    return jsonify({
+                        "success": False, 
+                        "error": f"Nilai '{v}' untuk gizi '{k}' bukan angka yang valid. Gunakan titik ('.') untuk desimal."
+                    }), 400
+            
+            # Kasus 2: Ada yang diisi tapi tidak lengkap
+            elif nama_gizi_bersih or nilai_str_bersih or satuan_bersih:
+                db.session.rollback()
+                return jsonify({
+                    "success": False, 
+                    "error": f"Data gizi tidak lengkap. Pastikan '{k or 'Baris Baru'}' memiliki NAMA, NILAI, dan SATUAN."
+                }), 400
+            
+            # Kasus 3: Semua field kosong (abaikan)
+            else:
+                pass 
+        # --- AKHIR LOGIKA ---
         
         db.session.commit()
         return jsonify({"success": True})
@@ -278,7 +311,7 @@ def admin_add_makanan():
 @app.route("/api/admin/edit", methods=["POST"])
 def admin_edit_makanan():
     try:
-        old_nama = request.form.get("old_nama", "").lower()
+        old_nama = request.form.get("old_nama", "").lower().strip()
         makanan = Makanan.query.filter_by(nama=old_nama).first()
         if not makanan:
             return jsonify({"success": False, "error": "Data lama tidak ditemukan"}), 404
@@ -296,13 +329,47 @@ def admin_edit_makanan():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             makanan.gambar = filename
 
-        Gizi.query.filter_by(makanan_id=makanan.id).delete()
+        Gizi.query.filter_by(makanan_id=makanan.id).delete() 
+        
         gizi_keys = request.form.getlist("gizi_nama[]")
         gizi_vals = request.form.getlist("gizi_nilai[]")
         gizi_satuans = request.form.getlist("gizi_satuan[]")
+
+        # --- LOGIKA INI SUDAH BENAR ---
         for k, v, s in zip(gizi_keys, gizi_vals, gizi_satuans):
-            if k and v and s:
-                db.session.add(Gizi(nama_gizi=k.strip(), nilai=float(v), satuan=s.strip(), makanan_id=makanan.id))
+            nama_gizi_bersih = k.strip()
+            nilai_str_bersih = v.strip().replace(",", ".") 
+            satuan_bersih = s.strip()
+
+            # Kasus 1: Semua terisi
+            if nama_gizi_bersih and nilai_str_bersih and satuan_bersih:
+                try:
+                    nilai_float = float(nilai_str_bersih)
+                    db.session.add(Gizi(
+                        nama_gizi=nama_gizi_bersih, 
+                        nilai=nilai_float, 
+                        satuan=satuan_bersih, 
+                        makanan_id=makanan.id
+                    ))
+                except ValueError:
+                    db.session.rollback()
+                    return jsonify({
+                        "success": False, 
+                        "error": f"Nilai '{v}' untuk gizi '{k}' bukan angka yang valid. Gunakan titik ('.') untuk desimal."
+                    }), 400
+            
+            # Kasus 2: Ada yang diisi tapi tidak lengkap
+            elif nama_gizi_bersih or nilai_str_bersih or satuan_bersih:
+                db.session.rollback()
+                return jsonify({
+                    "success": False, 
+                    "error": f"Data gizi tidak lengkap. Pastikan '{k or 'Baris Baru'}' memiliki NAMA, NILAI, dan SATUAN."
+                }), 400
+            
+            # Kasus 3: Semua field kosong (abaikan)
+            else:
+                pass
+        # --- AKHIR LOGIKA ---
 
         db.session.commit()
         return jsonify({"success": True})
@@ -312,7 +379,7 @@ def admin_edit_makanan():
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
-
+    
 @app.route("/api/admin/delete", methods=["POST"])
 def admin_delete_makanan():
     nama = request.json.get("nama", "").lower()
@@ -443,4 +510,4 @@ def serve_image(filename):
     return send_from_directory(IMAGE_FOLDER, filename)
 
 if __name__ == "__main__":
-    app.run(debug=False) 
+    app.run(debug=False)

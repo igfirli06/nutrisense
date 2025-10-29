@@ -10,25 +10,25 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
+            background-color: #0a192f; /* Navy Background */
+            color: #ccd6f6; /* Light text */
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px 0; /* Tambah padding atas bawah */
+            padding: 20px 0;
         }
         .container {
-            background: white;
+            background: #112240; /* Lighter navy for container */
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             width: 100%;
             max-width: 500px;
         }
         h1 {
-            color: #2c3e50;
+            color: #e6f1ff; /* Brighter text */
             text-align: center;
             margin-bottom: 30px;
         }
@@ -43,18 +43,24 @@
         input, select {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ccc;
+            border: 1px solid #304466; /* Themed border */
             border-radius: 8px;
             box-sizing: border-box;
             font-size: 1em;
+            background-color: #0a192f; /* Dark input background */
+            color: #ccd6f6; /* Light input text */
+        }
+        select option {
+            background: #0a192f;
+            color: #ccd6f6;
         }
         button {
             width: 100%;
             padding: 15px;
             border: none;
             border-radius: 8px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: #64ffda; /* Accent color */
+            color: #0a192f; /* Dark text for contrast */
             font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
@@ -66,25 +72,26 @@
         .hasil-container {
             margin-top: 30px;
             padding: 20px;
-            border: 2px solid #667eea;
+            border: 2px solid #64ffda; /* Accent color border */
             border-radius: 8px;
-            background-color: #f8f9fa;
+            background-color: #0a192f; /* Dark background for results */
         }
         .hasil-container h2 {
             margin-top: 0;
             text-align: center;
+            color: #e6f1ff;
         }
         .hasil-item {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #172a45; /* Darker navy border */
         }
         .hasil-item:last-child {
             border-bottom: none;
         }
         .error {
-            color: red;
+            color: #ff7b7b; /* Brighter red for visibility */
             text-align: center;
             font-weight: bold;
         }

@@ -7,37 +7,138 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Roboto', sans-serif; background-color: #fdfdfd; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1100px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #0a192f; /* Navy Background */
+            margin: 0;
+            padding: 20px;
+            color: #ccd6f6; /* Light text */
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #112240; /* Lighter navy for container */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
         .resep-layout { display: flex; gap: 40px; }
         .kolom-kiri { flex: 0 0 35%; }
         .kolom-kanan { flex: 1; }
-        .gambar-resep { width: 100%; border-radius: 12px; box-shadow: 0 8px 15px rgba(0,0,0,0.1); margin-bottom: 25px; }
-        .resep-judul { font-family: 'Source Serif 4', serif; font-size: 2.8em; font-weight: 700; margin-top: 0; margin-bottom: 25px; line-height: 1.2; color: #2d2d2d; }
-        h2 { font-family: 'Source Serif 4', serif; font-size: 1.8em; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; margin-top: 25px; margin-bottom: 15px; }
+        .gambar-resep {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            margin-bottom: 25px;
+        }
+        .resep-judul {
+            font-family: 'Source Serif 4', serif;
+            font-size: 2.8em;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 25px;
+            line-height: 1.2;
+            color: #e6f1ff; /* Brighter text for title */
+        }
+        h2 {
+            font-family: 'Source Serif 4', serif;
+            font-size: 1.8em;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #172a45; /* Darker navy border */
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #e6f1ff;
+        }
         .kolom-kiri h2:first-of-type { margin-top: 0; }
         .bahan-list { padding-left: 0; list-style: none; }
-        .bahan-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
-        .info-gizi-btn { background: #e9ecef; border: none; border-radius: 20px; padding: 5px 10px; font-size: 0.8em; cursor: pointer; transition: background 0.3s; }
-        .info-gizi-btn:hover { background: #ced4da; }
+        .bahan-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #172a45;
+        }
+        .info-gizi-btn {
+            background: #304466; 
+            color: #e6f1ff;
+            border: none;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .info-gizi-btn:hover { background: #415a86; }
         .cara-membuat { padding-left: 25px; list-style: none; counter-reset: steps-counter; }
-        .cara-membuat li { counter-increment: steps-counter; margin-bottom: 20px; line-height: 1.7; position: relative; }
-        .cara-membuat li::before { content: counter(steps-counter); position: absolute; left: -35px; top: 0; font-size: 1.2em; font-weight: bold; color: #fff; background-color: #0d47a1; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; line-height: 1; }
+        .cara-membuat li {
+            counter-increment: steps-counter;
+            margin-bottom: 20px;
+            line-height: 1.7;
+            position: relative;
+        }
+        .cara-membuat li::before {
+            content: counter(steps-counter);
+            position: absolute;
+            left: -35px;
+            top: 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #0a192f; /* Dark text for contrast */
+            background-color: #64ffda; /* Accent color */
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
         .gizi-table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
-        .gizi-table th, .gizi-table td { text-align: left; padding: 10px 4px; border-bottom: 1px solid #f5f5f5; }
-        .gizi-table th { font-weight: bold; color: #555; }
-        .nav-kembali { display: inline-block; margin-bottom: 20px; padding: 8px 16px; background: #f1f1f1; color: #333; text-decoration: none; border-radius: 20px; font-size: 0.9em; transition: background 0.3s; }
-        .nav-kembali:hover { background: #e0e0e0; }
+        .gizi-table th, .gizi-table td {
+            text-align: left;
+            padding: 10px 4px;
+            border-bottom: 1px solid #172a45;
+        }
+        .gizi-table th {
+            font-weight: bold;
+            color: #a8b2d1; /* Lighter text for headers */
+        }
+        .nav-kembali {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background: #304466;
+            color: #e6f1ff;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+        .nav-kembali:hover { background: #415a86; }
         
         /* CSS Untuk Modal */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); align-items: center; justify-content: center; }
         .modal.show { display: flex; }
-        .modal-content { background: #fff; padding: 25px; border-radius: 8px; width: 90%; max-width: 400px; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
-        .modal-header h3 { margin: 0; font-size: 1.2em; }
-        .close-btn { background: none; border: none; font-size: 1.5em; cursor: pointer; color: #aaa; }
+        .modal-content {
+            background: #112240; /* Modal background */
+            padding: 25px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #172a45;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .modal-header h3 { margin: 0; font-size: 1.2em; color: #e6f1ff; }
+        .close-btn { background: none; border: none; font-size: 1.5em; cursor: pointer; color: #a8b2d1; }
         .modal-body table { width: 100%; border-collapse: collapse; }
-        .modal-body td { padding: 6px 0; border-bottom: 1px solid #f0f0f0; }
+        .modal-body td { padding: 6px 0; border-bottom: 1px solid #172a45; }
+        .no-resep h2 { border-bottom: none; }
 
         @media (max-width: 800px) { .resep-layout { flex-direction: column; } .kolom-kiri { flex: 1; } }
     </style>
@@ -116,7 +217,7 @@
 <script>
     function showGiziBahan(namaBahan, dataGizi) {
         const modal = document.getElementById('gizi-bahan-modal');
-        document.getElementById('modal-title').innerText = `Info Gizi: ${namaBahan} (per gram)`;
+        document.getElementById('modal-title').innerText = `Info Gizi: ${namaBahan} (per 100 gram)`;
         
         const table = document.getElementById('modal-table');
         table.innerHTML = ''; // Kosongkan tabel
@@ -136,7 +237,6 @@
         document.getElementById('gizi-bahan-modal').classList.remove('show');
     }
 
-    // Tutup modal jika klik di luar
     window.onclick = function(event) {
         const modal = document.getElementById('gizi-bahan-modal');
         if (event.target == modal) {
