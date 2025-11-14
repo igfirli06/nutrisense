@@ -509,5 +509,45 @@ def admin_delete_resep():
 def serve_image(filename):
     return send_from_directory(IMAGE_FOLDER, filename)
 
+@app.route('/gizi/<nama_produk>')
+def detail_gizi(nama_produk):
+    # 1. Gunakan class 'Makanan', bukan 'BahanMakanan'
+    nama_dicari = nama_produk.strip().lower() # Pastikan format nama sesuai database
+    produk_db = Makanan.query.filter_by(nama=nama_dicari).first()
+    
+    if not produk_db:
+        return "Produk tidak ditemukan", 404
+
+    # 2. OLAH DATA: Ambil gizi dari tabel relasi dan jadikan dictionary sederhana
+    # Supaya HTML bisa memanggil {{ produk.kalori }}, {{ produk.protein }}, dst.
+    
+    # Default nilai 0
+    data_siap_pakai = {
+        "nama": produk_db.nama,
+        "gambar": produk_db.gambar,
+        "kalori": 0,
+        "karbo": 0,
+        "protein": 0,
+        "lemak": 0,
+        "vitamin_c": 0
+    }
+
+    # Loop semua gizi yang ada di database untuk makanan ini
+    for g in produk_db.gizi_entries:
+        nama_gizi = g.nama_gizi.lower()
+        if "energi" in nama_gizi or "kalori" in nama_gizi:
+            data_siap_pakai["kalori"] = g.nilai
+        elif "karbo" in nama_gizi:
+            data_siap_pakai["karbo"] = g.nilai
+        elif "protein" in nama_gizi:
+            data_siap_pakai["protein"] = g.nilai
+        elif "lemak" in nama_gizi:
+            data_siap_pakai["lemak"] = g.nilai
+        elif "vitamin c" in nama_gizi:
+            data_siap_pakai["vitamin_c"] = g.nilai
+
+    # 3. Kirim data yang sudah rapi ke template
+    return render_template('detail_gizi.html', produk=data_siap_pakai)
+
 if __name__ == "__main__":
     app.run(debug=False)

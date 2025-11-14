@@ -173,20 +173,17 @@
     const hasilDiv = document.getElementById('hasil');
     const foodGrid = document.getElementById('food-grid');
 
-    // --- FUNGSI UTAMA ---
-
-    // Fungsi untuk menampilkan ulang isi keranjang di layar
     function renderKeranjang() {
-        keranjangListDiv.innerHTML = ""; // Kosongkan dulu
+        keranjangListDiv.innerHTML = ""; 
         
         if (keranjangGizi.length === 0) {
             keranjangListDiv.innerHTML = '<p style="color: #a8b2d1;">Keranjang masih kosong. Klik tombol \'+\' pada makanan di bawah untuk menambahkannya.</p>';
-            hitungBtn.style.display = 'none'; // Sembunyikan tombol hitung
-            hasilDiv.innerHTML = ""; // Kosongkan hasil jika keranjang kosong
+            hitungBtn.style.display = 'none'; 
+            hasilDiv.innerHTML = ""; 
             return;
         }
 
-        hitungBtn.style.display = 'block'; // Tampilkan tombol hitung
+        hitungBtn.style.display = 'block'; 
 
         keranjangGizi.forEach((item, index) => {
             const li = document.createElement('li');
@@ -200,31 +197,25 @@
         });
     }
 
-    // --- EVENT LISTENERS ---
-
-    // 1. Saat tombol '+' di kartu makanan diklik
     foodGrid.addEventListener('click', function(e) {
         if (e.target.classList.contains('add-to-cart-btn')) {
             const nama = e.target.dataset.nama;
 
-            // Cek agar tidak ada duplikat di keranjang
             const isAlreadyInCart = keranjangGizi.some(item => item.nama === nama);
             if (isAlreadyInCart) {
                 alert(`'${nama}' sudah ada di keranjang!`);
                 return;
             }
 
-            // Tambahkan ke array keranjang dengan berat default 100g
             keranjangGizi.push({ nama: nama, berat: 100 });
             renderKeranjang();
         }
     });
 
-    // 2. Saat tombol hapus 'X' atau berat di keranjang diubah
     keranjangListDiv.addEventListener('click', function(e) {
         if (e.target.classList.contains('hapus-btn')) {
             const index = e.target.dataset.index;
-            keranjangGizi.splice(index, 1); // Hapus item dari array
+            keranjangGizi.splice(index, 1); 
             renderKeranjang();
         }
     });
@@ -234,14 +225,13 @@
             const index = e.target.dataset.index;
             const newBerat = parseFloat(e.target.value);
             if (newBerat > 0) {
-                keranjangGizi[index].berat = newBerat; // Update berat di array
+                keranjangGizi[index].berat = newBerat; 
             } else {
-                e.target.value = keranjangGizi[index].berat; // Kembalikan ke nilai lama jika tidak valid
+                e.target.value = keranjangGizi[index].berat; 
             }
         }
     });
 
-    // 3. Saat tombol "Hitung Total Gizi" diklik
     hitungBtn.addEventListener('click', async function() {
         if (keranjangGizi.length === 0) return;
 
@@ -274,7 +264,6 @@
         }
     });
     
-    // Panggil renderKeranjang() saat halaman pertama kali dimuat
     renderKeranjang();
 
 </script>

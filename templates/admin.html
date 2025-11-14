@@ -66,7 +66,7 @@
             margin-top: 15px;
         }
         table, th, td { border: 1px solid #304466; }
-        th, td { padding: 8px; text-align: left; }
+        th, td { padding: 8px; text-align: left; vertical-align: middle; } /* Default vertical align */
         th { background: #172a45; } /* Darker navy for table headers */
         ul { padding-left: 0; list-style: none; }
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); }
@@ -145,7 +145,17 @@
                 </select>
             </div>
             <table id="tabel-gizi">
-                <thead><tr><th>Nama Makanan</th><th>Kategori</th><th>Nama Gizi</th><th>Nilai</th><th>Satuan</th><th>Action</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Gambar</th>
+                        <th>Nama Makanan</th>
+                        <th>Kategori</th>
+                        <th>Nama Gizi</th>
+                        <th>Nilai</th>
+                        <th>Satuan</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -172,7 +182,15 @@
             </form>
             <h3>Daftar Resep</h3>
             <table id="tabel-resep">
-                <thead><tr><th>Judul</th><th>Deskripsi</th><th>Bahan</th><th>Action</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Gambar</th>
+                        <th>Judul</th>
+                        <th>Deskripsi</th>
+                        <th>Bahan</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -275,7 +293,7 @@
                 }
 
                 let currentImage = document.getElementById("current-image"); 
-                currentImage.innerHTML = makanan.gambar ? `<img src="/static/images/${makanan.gambar}" alt="${nama}" style="max-width: 100px;">` : 'Tidak ada gambar'; 
+                currentImage.innerHTML = makanan.gambar ? `<img src="/static/images/${makanan.gambar}" alt="${nama}" style="max-width: 100px; border-radius: 4px;">` : 'Tidak ada gambar'; 
                 document.getElementById("modal-edit").style.display = "block"; 
             } 
         } catch (error) { console.error("Error fetching data for edit:", error); } 
@@ -403,7 +421,7 @@
             bahanResepEdit = Array.isArray(resep.bahan) ? [...resep.bahan] : [];
             renderBahanEdit();
             let currentImage = document.getElementById("current-resep-image");
-            currentImage.innerHTML = resep.gambar ? `<img src="/static/images/${resep.gambar}" alt="${judul}" style="max-width: 100px;">` : 'Tidak ada gambar';
+            currentImage.innerHTML = resep.gambar ? `<img src="/static/images/${resep.gambar}" alt="${judul}" style="max-width: 100px; border-radius: 4px;">` : 'Tidak ada gambar';
             document.getElementById("modal-edit-resep").style.display = "block";
         }
     }
@@ -446,6 +464,9 @@
         }
     };
 
+    // ================================================================
+    // ================== PERUBAHAN 3 (loadTabelResep) ==================
+    // ================================================================
     async function loadTabelResep() {
         try {
             let res = await fetch("/api/admin/list_resep", { cache: "no-store" });
@@ -454,7 +475,8 @@
             tbody.innerHTML = ""; 
 
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Belum ada resep yang disimpan.</td></tr>';
+                // Perbaiki colspan menjadi 5
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada resep yang disimpan.</td></tr>';
                 return;
             }
 
@@ -465,11 +487,18 @@
                     : 'Tidak ada bahan';
                 let deskripsiSingkat = (resep.deskripsi || '').substring(0, 70) + '...';
 
+                // Buat HTML untuk gambar
+                let imgHtml = resep.gambar 
+                    ? `<img src="/static/images/${resep.gambar}" alt="${resep.judul}" style="width: 75px; height: 75px; object-fit: cover; border-radius: 4px;">` 
+                    : 'N/A';
+
+                // Buat baris tabel baru dengan kolom gambar
                 tr.innerHTML = `
+                    <td>${imgHtml}</td>
                     <td>${resep.judul}</td>
                     <td>${deskripsiSingkat}</td>
                     <td>${bahanHtml}</td>
-                    <td style="white-space: nowrap;">
+                    <td style="white-space: nowrap; vertical-align: top;">
                         <button class="edit" onclick="editResep('${resep.judul}')">Edit</button>
                         <button class="delete" onclick="hapusResep('${resep.judul}')">Hapus</button>
                     </td>
@@ -479,10 +508,14 @@
         } catch (error) {
             console.error("Error loading resep data:", error);
             let tbody = document.querySelector("#tabel-resep tbody");
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Gagal memuat data resep.</td></tr>';
+            // Perbaiki colspan menjadi 5
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Gagal memuat data resep.</td></tr>';
         }
     }
 
+    // ================================================================
+    // ================== PERUBAHAN 4 (loadTabelGizi) ===================
+    // ================================================================
     async function loadTabelGizi() {
         try {
             let res = await fetch("/api/admin/list", { cache: "no-store" });
@@ -492,6 +525,10 @@
             let bahanSelect = document.getElementById("bahan-resep-nama");
             let editBahanSelect = document.getElementById("edit-bahan-resep-nama"); 
             
+            // Simpan value yang sedang dipilih (jika ada)
+            let currentBahan = bahanSelect.value;
+            let currentEditBahan = editBahanSelect.value;
+            
             bahanSelect.innerHTML = `<option value="">- Pilih Makanan -</option>`;
             editBahanSelect.innerHTML = `<option value="">- Pilih Makanan -</option>`;
             
@@ -499,6 +536,10 @@
                 bahanSelect.innerHTML += `<option value="${nama}">${nama}</option>`;
                 editBahanSelect.innerHTML += `<option value="${nama}">${nama}</option>`;
             });
+
+            // Kembalikan value yang tadi dipilih
+            bahanSelect.value = currentBahan;
+            editBahanSelect.value = currentEditBahan;
 
             let filterKategori = document.getElementById("filter-kategori").value;
             let tbody = document.querySelector("#tabel-gizi tbody");
@@ -512,28 +553,73 @@
             });
 
             if (filteredKeys.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Tidak ada data untuk kategori ini.</td></tr>`;
+                // Perbaiki colspan menjadi 7
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Tidak ada data untuk kategori ini.</td></tr>`;
+                return;
             }
 
             for (const nama of filteredKeys) {
                 let makanan = data[nama];
-                let first = true;
-                if (Object.keys(makanan.gizi || {}).length > 0) {
-                    Object.keys(makanan.gizi).forEach((giziNama) => {
-                        let giziData = makanan.gizi[giziNama];
-                        let tr = document.createElement("tr");
-                        tr.innerHTML = `<td style="${first ? 'font-weight: bold;' : ''}">${first ? nama : ""}</td><td>${first ? makanan.kategori : ""}</td><td>${giziNama}</td><td>${giziData.nilai}</td><td>${giziData.satuan}</td><td style="white-space: nowrap;">${first ? `<button class="edit" onclick="editData('${nama}')">Edit</button><button class="delete" onclick="hapusData('${nama}')">Hapus</button>` : ""}</td>`;
-                        tbody.appendChild(tr);
-                        first = false;
-                    });
+                const giziKeys = Object.keys(makanan.gizi || {});
+                const rowSpan = giziKeys.length > 0 ? giziKeys.length : 1;
+
+                // Buat HTML untuk gambar
+                const imgHtml = makanan.gambar 
+                    ? `<img src="/static/images/${makanan.gambar}" alt="${nama}" style="width: 75px; height: 75px; object-fit: cover; border-radius: 4px;">` 
+                    : 'N/A';
+
+                let tr = document.createElement("tr");
+                
+                // Buat baris pertama dengan rowspan
+                tr.innerHTML = `
+                    <td rowspan="${rowSpan}">${imgHtml}</td>
+                    <td rowspan="${rowSpan}" style="font-weight: bold; vertical-align: top;">${nama}</td>
+                    <td rowspan="${rowSpan}" style="vertical-align: top;">${makanan.kategori}</td>
+                `;
+
+                if (giziKeys.length > 0) {
+                    // Tambahkan data gizi pertama
+                    let giziNama = giziKeys[0];
+                    let giziData = makanan.gizi[giziNama];
+                    tr.innerHTML += `
+                        <td>${giziNama}</td>
+                        <td>${giziData.nilai}</td>
+                        <td>${giziData.satuan}</td>
+                    `;
                 } else {
-                    let tr = document.createElement("tr");
-                    tr.innerHTML = `<td style="font-weight: bold;">${nama}</td><td>${makanan.kategori}</td><td colspan="3">(Tidak ada data gizi)</td><td style="white-space: nowrap;"><button class="edit" onclick="editData('${nama}')">Edit</button><button class="delete" onclick="hapusData('${nama}')">Hapus</button></td>`;
-                    tbody.appendChild(tr);
+                    // Jika tidak ada data gizi
+                    tr.innerHTML += `<td colspan="3">(Tidak ada data gizi)</td>`;
+                }
+
+                // Tambahkan tombol action
+                tr.innerHTML += `
+                    <td rowspan="${rowSpan}" style="white-space: nowrap; vertical-align: top;">
+                        <button class="edit" onclick="editData('${nama}')">Edit</button>
+                        <button class="delete" onclick="hapusData('${nama}')">Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                // Tambahkan sisa baris gizi (jika ada)
+                if (giziKeys.length > 1) {
+                    for (let i = 1; i < giziKeys.length; i++) {
+                        let giziNama = giziKeys[i];
+                        let giziData = makanan.gizi[giziNama];
+                        let tr_extra = document.createElement("tr");
+                        tr_extra.innerHTML = `
+                            <td>${giziNama}</td>
+                            <td>${giziData.nilai}</td>
+                            <td>${giziData.satuan}</td>
+                        `;
+                        tbody.appendChild(tr_extra);
+                    }
                 }
             }
         } catch (error) {
             console.error("Error loading gizi data:", error);
+            let tbody = document.querySelector("#tabel-gizi tbody");
+            // Perbaiki colspan menjadi 7
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Gagal memuat data.</td></tr>`;
         }
     }
     
