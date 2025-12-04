@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Admin Input Gizi & Resep</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -10,9 +12,7 @@
             margin: 0;
             padding: 20px;
         }
-        h1, h2, h3 {
-            color: #e6f1ff; /* Brighter Text */
-        }
+        h1, h2, h3 { color: #e6f1ff; }
         .container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -21,69 +21,60 @@
             margin: auto;
         }
         .box {
-            background: #112240; /* Lighter navy for containers */
+            background: #112240; 
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.2);
         }
-        form {
-            margin-bottom: 20px;
-        }
+        form { margin-bottom: 20px; }
         input, select, textarea {
             padding: 8px;
             margin-bottom: 10px;
-            border: 1px solid #304466; /* Themed border */
+            border: 1px solid #304466; 
             border-radius: 4px;
             box-sizing: border-box;
             width: 100%;
-            background-color: #0a192f; /* Dark input background */
-            color: #ccd6f6; /* Light input text */
+            background-color: #0a192f; 
+            color: #ccd6f6; 
         }
-        select option {
-            background-color: #0a192f;
-        }
+        select option { background-color: #0a192f; }
         button {
             padding: 8px 12px;
             border: none;
-            background-color: #64ffda; /* Accent color */
-            color: #0a192f; /* Dark text for contrast */
+            background-color: #64ffda; 
+            color: #0a192f; 
             border-radius: 4px;
             cursor: pointer;
             margin-top: 5px;
             margin-right: 5px;
             font-weight: bold;
         }
-        button:hover {
-            filter: brightness(90%);
-        }
+        button:hover { filter: brightness(90%); }
         button.edit { background-color: #28a745; color: white; }
-        button.edit:hover { background-color: #218838; }
         button.delete { background-color: #dc3545; color: white; }
-        button.delete:hover { background-color: #c82333; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
+        
+        /* Table Styles */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         table, th, td { border: 1px solid #304466; }
-        th, td { padding: 8px; text-align: left; vertical-align: middle; } /* Default vertical align */
-        th { background: #172a45; } /* Darker navy for table headers */
+        th, td { padding: 8px; text-align: left; vertical-align: middle; }
+        th { background: #172a45; }
+        
         ul { padding-left: 0; list-style: none; }
+        
+        /* Modal Style */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); }
         .modal-content { background-color: #112240; margin: 5% auto; padding: 20px; border-radius: 8px; width: 80%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
         .close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; color: #a8b2d1; }
         .close:hover { color: #e74c3c; }
+        
         .gizi-field, .bahan-input-group { display: grid; gap: 10px; margin-bottom: 10px; align-items: center; }
         .gizi-field { grid-template-columns: 2fr 1fr 1fr auto; }
         .bahan-input-group { grid-template-columns: 2fr 1fr auto; }
         .gizi-field input, .gizi-field select, .bahan-input-group select, .bahan-input-group input { margin-bottom: 0; }
-        #global-info { max-width: 1200px; margin: 0 auto 15px auto; }
-        .info { padding: 10px; margin: 10px 0; border-radius: 4px; display: none; }
-        .success { background-color: #134b32; color: #a7e0c0; border: 1px solid #278153; display: block; }
-        .error { background-color: #5a1a22; color: #f5c6cb; border: 1px solid #a33a48; display: block; }
+        
         .satuan-hint { font-size: 0.8em; color: #a8b2d1; margin-top: -5px; margin-bottom: 10px; }
         textarea { min-height: 120px; resize: vertical; padding: 10px; font-size: 1em; }
-        .bahan-list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #0a192f; margin-bottom: 5px; border-radius: 4px; }
+        .bahan-list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #0a192f; margin-bottom: 5px; border-radius: 4px; border: 1px solid #304466; }
     </style>
 </head>
 <body>
@@ -92,14 +83,14 @@
         <a href="/" style="color: #64ffda; text-decoration: none;">← Kembali ke Home</a>
     </div>
 
-    <div id="global-info"></div>
-
     <div class="container">
+        
         <div class="box">
             <h2>Input Data Gizi Makanan</h2>
             <form id="form-makanan" enctype="multipart/form-data">
                 <label>Nama makanan:</label>
                 <input type="text" id="nama" required>
+                
                 <label>Kategori:</label>
                 <select id="kategori" required>
                     <option value="">- Pilih Kategori -</option>
@@ -113,8 +104,9 @@
                     <option value="umbi-umbian">Umbi-Umbian</option>
                     <option value="olahan-produk">Olahan Produk</option>
                 </select>
+
                 <label>Data Gizi (per 100 gram):</label>
-                <div class="satuan-hint"><strong>Contoh:</strong> Energi (kal), Protein (g), Lemak (g), Karbohidrat (g), Kalsium (mg)</div>
+                <div class="satuan-hint"><strong>Contoh:</strong> Energi (kal), Protein (g), Lemak (g)</div>
                 <div id="gizi-fields">
                     <div class="gizi-field">
                         <input type="text" placeholder="Nama Gizi" class="gizi-nama" required list="gizi-suggestions">
@@ -123,14 +115,18 @@
                         <button type="button" class="delete" onclick="this.parentElement.remove()">✕</button>
                     </div>
                 </div>
-                <button type="button" onclick="addField()">Tambah Gizi</button><br>
+                <button type="button" onclick="addField()">+ Tambah Baris Gizi</button><br><br>
+
                 <label>Gambar makanan:</label>
                 <input type="file" id="gambar" accept="image/*"><br>
                 <button type="button" id="simpan-btn">Simpan Makanan</button>
             </form>
-            <h3>Data Gizi Tersimpan</h3>
-            <div style="margin-top: 15px; margin-bottom: 10px;">
-                <label for="filter-kategori"><strong>Filter berdasarkan Kategori:</strong></label>
+
+            <hr style="border-color: #304466; margin: 20px 0;">
+
+            <h3>Data Tersimpan</h3>
+            <div style="margin-bottom: 10px;">
+                <label for="filter-kategori">Filter:</label>
                 <select id="filter-kategori" onchange="loadTabelGizi()">
                     <option value="semua">- Semua Kategori -</option>
                     <option value="buah">Buah</option>
@@ -147,16 +143,13 @@
             <table id="tabel-gizi">
                 <thead>
                     <tr>
-                        <th>Gambar</th>
-                        <th>Nama Makanan</th>
+                        <th width="50">Img</th>
+                        <th>Nama</th>
                         <th>Kategori</th>
-                        <th>Nama Gizi</th>
-                        <th>Nilai</th>
-                        <th>Satuan</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody id="tbody-gizi"></tbody>
             </table>
         </div>
 
@@ -165,33 +158,35 @@
             <form id="form-resep">
                 <label>Judul Resep:</label>
                 <input type="text" id="judul-resep" required>
-                <label for="deskripsi">Deskripsi / Langkah-langkah:</label><br>
-                <textarea id="deskripsi" placeholder="Tulis langkah-langkah resep, pisahkan dengan Enter..."></textarea>
+                
+                <label>Deskripsi / Langkah:</label>
+                <textarea id="deskripsi" placeholder="Langkah-langkah..."></textarea>
+                
                 <label>Bahan-bahan:</label>
                 <div class="bahan-input-group">
-                    <select id="bahan-resep-nama"><option value="">- Pilih Makanan -</option></select>
-                    <input type="number" id="bahan-resep-berat" placeholder="Berat (gram)" min="1">
+                    <select id="bahan-resep-nama"><option value="">Loading...</option></select>
+                    <input type="number" id="bahan-resep-berat" placeholder="Berat (gr)" min="1">
                     <button type="button" onclick="tambahBahan()">+</button>
                 </div>
                 <ul id="daftar-bahan"></ul>
                 
                 <label>Gambar Resep:</label>
                 <input type="file" id="gambar-resep" accept="image/*"><br>
-
                 <button type="button" id="simpan-resep-btn">Simpan Resep</button>
             </form>
+
+            <hr style="border-color: #304466; margin: 20px 0;">
+            
             <h3>Daftar Resep</h3>
             <table id="tabel-resep">
                 <thead>
                     <tr>
-                        <th>Gambar</th>
+                        <th width="50">Img</th>
                         <th>Judul</th>
-                        <th>Deskripsi</th>
-                        <th>Bahan</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody id="tbody-resep"></tbody>
             </table>
         </div>
     </div>
@@ -200,13 +195,12 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2>Edit Data Makanan</h2>
-            <form id="form-edit-makanan" enctype="multipart/form-data">
+            <form id="form-edit-makanan">
                 <input type="hidden" id="edit-old-nama">
                 <label>Nama makanan:</label>
                 <input type="text" id="edit-nama" required>
                 <label>Kategori:</label>
                 <select id="edit-kategori" required>
-                    <option value="">- Pilih Kategori -</option>
                     <option value="buah">Buah</option>
                     <option value="sayur">Sayur</option>
                     <option value="daging">Daging</option>
@@ -219,11 +213,11 @@
                 </select>
                 <label>Data Gizi:</label>
                 <div id="edit-gizi-fields"></div>
-                <button type="button" onclick="addEditField()">Tambah Gizi</button><br>
-                <label>Gambar makanan:</label>
+                <button type="button" onclick="addEditField()">+ Tambah Gizi</button><br><br>
+                <label>Ganti Gambar:</label>
                 <input type="file" id="edit-gambar" accept="image/*">
-                <div id="current-image"></div><br>
-                <button type="button" id="update-btn">Update Makanan</button>
+                <div id="current-image" style="margin-top:10px;"></div><br>
+                <button type="button" id="update-btn" style="width:100%">Update Data</button>
             </form>
         </div>
     </div>
@@ -236,8 +230,10 @@
                 <input type="hidden" id="edit-old-judul">
                 <label>Judul Resep:</label>
                 <input type="text" id="edit-judul-resep" required>
+                
                 <label>Deskripsi:</label>
                 <textarea id="edit-deskripsi-resep"></textarea>
+                
                 <label>Bahan-bahan:</label>
                 <div class="bahan-input-group">
                     <select id="edit-bahan-resep-nama"><option value="">- Pilih Makanan -</option></select>
@@ -248,421 +244,458 @@
 
                 <label>Ganti Gambar Resep:</label>
                 <input type="file" id="edit-gambar-resep" accept="image/*">
-                <div id="current-resep-image"></div><br>
+                <div id="current-resep-image" style="margin-top:10px;"></div><br>
 
-                <button type="button" id="update-resep-btn">Update Resep</button>
+                <button type="button" id="update-resep-btn" style="width:100%">Update Resep</button>
             </form>
         </div>
     </div>
 
-<script>
-    function addField() { let div = document.createElement("div"); div.className = "gizi-field"; div.innerHTML = `<input type="text" placeholder="Nama Gizi" class="gizi-nama" required list="gizi-suggestions"><input type="number" step="any" placeholder="Nilai" class="gizi-nilai" required><input type="text" placeholder="Satuan" class="gizi-satuan" required list="satuan-list"><button type="button" class="delete" onclick="this.parentElement.remove()">✕</button>`; document.getElementById("gizi-fields").appendChild(div); }
-    function addEditField() { let div = document.createElement("div"); div.className = "gizi-field"; div.innerHTML = `<input type="text" placeholder="Nama Gizi" class="edit-gizi-nama" required list="gizi-suggestions"><input type="number" step="any" placeholder="Nilai" class="edit-gizi-nilai" required><input type="text" placeholder="Satuan" class="edit-gizi-satuan" required list="satuan-list"><button type="button" class="delete" onclick="this.parentElement.remove()">✕</button>`; document.getElementById("edit-gizi-fields").appendChild(div); }
+    <script>
+        // --- KONFIGURASI SWEETALERT (NOTIFIKASI) ---
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            background: '#112240',
+            color: '#fff',
+            timerProgressBar: true
+        });
 
-    // ==========================================================
-    // INI ADALAH FUNGSI editData YANG SUDAH DIPERBAIKI
-    // ==========================================================
-    async function editData(nama) { 
-        try { 
-            let res = await fetch("/api/admin/list", { cache: "no-store" }); 
-            let data = await res.json(); 
-            let makanan = data[nama]; 
-            if (makanan) { 
-                document.getElementById("edit-old-nama").value = nama; 
-                document.getElementById("edit-nama").value = nama; 
-                document.getElementById("edit-kategori").value = makanan.kategori || ''; 
-                
-                let giziFields = document.getElementById("edit-gizi-fields"); 
-                giziFields.innerHTML = ''; 
-                
-                let giziDataMap = makanan.gizi || {};
-                let giziKeys = Object.keys(giziDataMap);
+        // Variable Global untuk Resep
+        let bahanResep = [];
+        let bahanResepEdit = [];
 
-                if (giziKeys.length > 0) {
-                    // Jika ada data gizi, tampilkan
-                    giziKeys.forEach(giziNama => { 
-                        let giziData = giziDataMap[giziNama]; 
-                        let div = document.createElement("div"); 
-                        div.className = "gizi-field"; 
-                        div.innerHTML = `<input type="text" placeholder="Nama Gizi" class="edit-gizi-nama" value="${giziNama}" required list="gizi-suggestions"><input type="number" step="any" placeholder="Nilai" class="edit-gizi-nilai" value="${giziData.nilai}" required><input type="text" placeholder="Satuan" class="edit-gizi-satuan" value="${giziData.satuan}" required list="satuan-list"><button type="button" class="delete" onclick="this.parentElement.remove()">✕</button>`; 
-                        giziFields.appendChild(div); 
-                    });
-                } else {
-                    // ===== PERBAIKAN: Jika tidak ada data gizi, tambahkan satu baris input kosong =====
-                    addEditField(); 
+        // --- FUNGSI HELPER UI ---
+        function addField() { 
+            let div = document.createElement("div"); 
+            div.className = "gizi-field"; 
+            div.innerHTML = `<input type="text" placeholder="Nama Gizi" class="gizi-nama" list="gizi-suggestions"><input type="number" step="any" placeholder="Nilai" class="gizi-nilai"><input type="text" placeholder="Satuan" class="gizi-satuan" list="satuan-list"><button type="button" class="delete" onclick="this.parentElement.remove()">✕</button>`; 
+            document.getElementById("gizi-fields").appendChild(div); 
+        }
+
+        function addEditField() { 
+            let div = document.createElement("div"); 
+            div.className = "gizi-field"; 
+            div.innerHTML = `<input type="text" placeholder="Nama Gizi" class="edit-gizi-nama" list="gizi-suggestions"><input type="number" step="any" placeholder="Nilai" class="edit-gizi-nilai"><input type="text" placeholder="Satuan" class="edit-gizi-satuan" list="satuan-list"><button type="button" class="delete" onclick="this.parentElement.remove()">✕</button>`; 
+            document.getElementById("edit-gizi-fields").appendChild(div); 
+        }
+
+        // --- LOGIKA DATA MAKANAN (AJAX) ---
+        
+        // PERBAIKAN SCROLL: Menambahkan parameter jagaPosisiScroll
+        async function loadTabelGizi(jagaPosisiScroll = false) {
+            const filter = document.getElementById('filter-kategori').value;
+            const tbody = document.getElementById('tbody-gizi');
+            const selectBahan = document.getElementById('bahan-resep-nama');
+            const selectBahanEdit = document.getElementById('edit-bahan-resep-nama');
+            
+            // 1. Simpan posisi scroll sebelum melakukan apa-apa
+            let posisiScroll = window.scrollY;
+
+            // Catatan: Saya menghapus "tbody.innerHTML = 'Memuat...'" agar tabel tidak kempis/menyusut
+            
+            try {
+                const res = await fetch("/api/admin/list");
+                const dataRaw = await res.json();
+                
+                // Baru bersihkan tabel setelah data diterima
+                tbody.innerHTML = '';
+                
+                // Reset Dropdown Bahan Resep
+                selectBahan.innerHTML = '<option value="">- Pilih Makanan -</option>';
+                selectBahanEdit.innerHTML = '<option value="">- Pilih Makanan -</option>';
+
+                // Convert Dictionary ke Array
+                const sortedData = Object.entries(dataRaw).map(([key, value]) => {
+                    return {
+                        nama: key, 
+                        ...value   
+                    };
+                }).sort((a, b) => a.nama.localeCompare(b.nama));
+
+                if(sortedData.length === 0) {
+                     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">Data kosong.</td></tr>';
                 }
 
-                let currentImage = document.getElementById("current-image"); 
-                currentImage.innerHTML = makanan.gambar ? `<img src="/static/images/${makanan.gambar}" alt="${nama}" style="max-width: 100px; border-radius: 4px;">` : 'Tidak ada gambar'; 
-                document.getElementById("modal-edit").style.display = "block"; 
-            } 
-        } catch (error) { console.error("Error fetching data for edit:", error); } 
-    }
-    // ==========================================================
-    // AKHIR FUNGSI YANG DIPERBAIKI
-    // ==========================================================
-    
-    document.getElementById("simpan-btn").onclick = async function() { 
-        let formData = new FormData(); 
-        formData.append("nama", document.getElementById("nama").value.trim()); 
-        formData.append("kategori", document.getElementById("kategori").value); 
-        document.querySelectorAll("#gizi-fields .gizi-field").forEach(field => { 
-            formData.append("gizi_nama[]", field.querySelector(".gizi-nama").value); 
-            formData.append("gizi_nilai[]", field.querySelector(".gizi-nilai").value); 
-            formData.append("gizi_satuan[]", field.querySelector(".gizi-satuan").value); 
-        }); 
-        let gambar = document.getElementById("gambar").files[0]; 
-        if(gambar) formData.append("gambar", gambar); 
-        
-        let res = await fetch("/api/admin/add", { method: "POST", body: formData }); 
-        let data = await res.json(); 
-        if (data.success) { 
-            showInfo("Data berhasil disimpan!", "success"); 
-            document.getElementById("form-makanan").reset(); 
-            document.getElementById("gizi-fields").innerHTML = `<div class="gizi-field"><input type="text" placeholder="Nama Gizi" class="gizi-nama" required list="gizi-suggestions"><input type="number" step="any" placeholder="Nilai" class="gizi-nilai" required><input type="text" placeholder="Satuan" class="gizi-satuan" required list="satuan-list"><button type="button" class="delete" onclick="this.parentElement.remove()">✕</button></div>`;
-            loadTabelGizi(); 
-        } else { 
-            showInfo("Gagal: " + (data.error || "Unknown error"), "error"); 
-        } 
-    };
+                sortedData.forEach(item => {
+                    // Isi Dropdown Resep
+                    selectBahan.innerHTML += `<option value="${item.nama}">${item.nama}</option>`;
+                    selectBahanEdit.innerHTML += `<option value="${item.nama}">${item.nama}</option>`;
 
-    document.getElementById("update-btn").onclick = async function() { 
-        let formData = new FormData(); 
-        formData.append("old_nama", document.getElementById("edit-old-nama").value); 
-        formData.append("nama", document.getElementById("edit-nama").value.trim()); 
-        formData.append("kategori", document.getElementById("edit-kategori").value); 
-        
-        document.querySelectorAll("#edit-gizi-fields .gizi-field").forEach(field => { 
-            formData.append("gizi_nama[]", field.querySelector(".edit-gizi-nama").value); 
-            formData.append("gizi_nilai[]", field.querySelector(".edit-gizi-nilai").value); 
-            formData.append("gizi_satuan[]", field.querySelector(".edit-gizi-satuan").value); 
-        }); 
-        
-        let gambar = document.getElementById("edit-gambar").files[0]; 
-        if (gambar) formData.append("gambar", gambar); 
-        
-        let res = await fetch("/api/admin/edit", { method: "POST", body: formData }); 
-        let data = await res.json(); 
-        if (data.success) { 
-            showInfo("Data berhasil diupdate!", "success"); 
-            closeModal(); 
-            loadTabelGizi();
-        } else { 
-            showInfo("Gagal update: " + (data.error || "Unknown error"), "error"); 
-        } 
-    };
-    
-    async function hapusData(nama) { 
-        if (!confirm(`Hapus data makanan '${nama}'?`)) return; 
-        let res = await fetch("/api/admin/delete", { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ nama }) }); 
-        let data = await res.json(); 
-        if(data.success) { 
-            showInfo("Data berhasil dihapus.", "success"); 
-            loadTabelGizi(); 
-        } else { 
-            showInfo("Gagal menghapus: " + (data.error || "Error"), "error"); 
-        } 
-    }
+                    // Filter Logic untuk Tabel
+                    if (filter !== 'semua' && item.kategori !== filter) return;
 
-    let bahanResep = [];
-    let bahanResepEdit = [];
-
-    function tambahBahan() { let namaSelect = document.getElementById("bahan-resep-nama"); let beratInput = document.getElementById("bahan-resep-berat"); let nama = namaSelect.value; let berat = parseFloat(beratInput.value); if (nama && berat > 0) { if (bahanResep.find(b => b.nama === nama)) { alert("Bahan ini sudah ditambahkan."); return; } bahanResep.push({ nama: nama, berat: berat }); renderBahan(); namaSelect.value = ""; beratInput.value = ""; } else { alert("Pilih bahan dan masukkan berat yang valid."); } }
-    function tambahBahanEdit() { let namaSelect = document.getElementById("edit-bahan-resep-nama"); let beratInput = document.getElementById("edit-bahan-resep-berat"); let nama = namaSelect.value; let berat = parseFloat(beratInput.value); if (nama && berat > 0) { if (bahanResepEdit.find(b => b.nama === nama)) { alert("Bahan ini sudah ditambahkan."); return; } bahanResepEdit.push({ nama: nama, berat: berat }); renderBahanEdit(); namaSelect.value = ""; beratInput.value = ""; } else { alert("Pilih bahan dan masukkan berat yang valid."); } }
-    function renderBahan() { let ul = document.getElementById("daftar-bahan"); ul.innerHTML = ""; bahanResep.forEach((b, index) => { let li = document.createElement("li"); li.className = "bahan-list-item"; li.innerHTML = `<span>${b.nama} - <strong>${b.berat}g</strong></span> <button type="button" class="delete" onclick="hapusBahan(${index})">Hapus</button>`; ul.appendChild(li); }); }
-    function renderBahanEdit() { let ul = document.getElementById("edit-daftar-bahan"); ul.innerHTML = ""; bahanResepEdit.forEach((b, index) => { let li = document.createElement("li"); li.className = "bahan-list-item"; li.innerHTML = `<span>${b.nama} - <strong>${b.berat}g</strong></span> <button type="button" class="delete" onclick="hapusBahanEdit(${index})">Hapus</button>`; ul.appendChild(li); }); }
-    function hapusBahan(index) { bahanResep.splice(index, 1); renderBahan(); }
-    function hapusBahanEdit(index) { bahanResepEdit.splice(index, 1); renderBahanEdit(); }
-    
-    document.getElementById("simpan-resep-btn").onclick = async function() {
-        let judul = document.getElementById("judul-resep").value.trim();
-        let deskripsi = document.getElementById("deskripsi").value.trim();
-        if (!judul || bahanResep.length === 0) {
-            showInfo("Judul dan minimal satu bahan wajib diisi!", "error");
-            return;
-        }
-        let formData = new FormData();
-        formData.append("judul", judul);
-        formData.append("deskripsi", deskripsi);
-        formData.append("bahan", JSON.stringify(bahanResep)); 
-        let gambar = document.getElementById("gambar-resep").files[0];
-        if (gambar) {
-            formData.append("gambar", gambar);
-        }
-        try {
-            let res = await fetch("/api/admin/add_resep", {
-                method: "POST",
-                body: formData 
-            });
-            let data = await res.json();
-            if (data.success) {
-                showInfo("Resep berhasil disimpan!", "success");
-                document.getElementById("form-resep").reset();
-                bahanResep = [];
-                renderBahan();
-                loadTabelResep();
-            } else {
-                showInfo("Gagal menyimpan resep: " + (data.error || "Error"), "error");
-            }
-        } catch (error) {
-            showInfo("Error menyimpan resep", "error");
-        }
-    };
-
-    async function editResep(judul) {
-        let res = await fetch("/api/admin/list_resep", { cache: "no-store" });
-        let data = await res.json();
-        let resep = data.find(r => r.judul === judul);
-        
-        if (resep) {
-            document.getElementById("edit-old-judul").value = judul;
-            document.getElementById("edit-judul-resep").value = judul;
-            document.getElementById("edit-deskripsi-resep").value = resep.deskripsi || '';
-            bahanResepEdit = Array.isArray(resep.bahan) ? [...resep.bahan] : [];
-            renderBahanEdit();
-            let currentImage = document.getElementById("current-resep-image");
-            currentImage.innerHTML = resep.gambar ? `<img src="/static/images/${resep.gambar}" alt="${judul}" style="max-width: 100px; border-radius: 4px;">` : 'Tidak ada gambar';
-            document.getElementById("modal-edit-resep").style.display = "block";
-        }
-    }
-
-    document.getElementById("update-resep-btn").onclick = async function() {
-        let oldJudul = document.getElementById("edit-old-judul").value;
-        let judul = document.getElementById("edit-judul-resep").value.trim();
-        let deskripsi = document.getElementById("edit-deskripsi-resep").value.trim();
-        
-        if (!judul || bahanResepEdit.length === 0) {
-            showInfo("Judul dan minimal satu bahan wajib diisi!", "error");
-            return;
-        }
-
-        let formData = new FormData();
-        formData.append("old_judul", oldJudul);
-        formData.append("judul", judul);
-        formData.append("deskripsi", deskripsi);
-        formData.append("bahan", JSON.stringify(bahanResepEdit));
-
-        let gambar = document.getElementById("edit-gambar-resep").files[0];
-        if (gambar) {
-            formData.append("gambar", gambar);
-        }
-        try {
-            let res = await fetch("/api/admin/edit_resep", {
-                method: "POST",
-                body: formData
-            });
-            let data = await res.json();
-            if (data.success) {
-                showInfo("Resep berhasil diupdate!", "success");
-                closeModalResep();
-                loadTabelResep();
-            } else {
-                showInfo("Gagal update resep: " + (data.error || "Error"), "error");
-            }
-        } catch (error) {
-            showInfo("Error update resep", "error");
-        }
-    };
-
-    // ================================================================
-    // ================== PERUBAHAN 3 (loadTabelResep) ==================
-    // ================================================================
-    async function loadTabelResep() {
-        try {
-            let res = await fetch("/api/admin/list_resep", { cache: "no-store" });
-            let data = await res.json();
-            let tbody = document.querySelector("#tabel-resep tbody");
-            tbody.innerHTML = ""; 
-
-            if (data.length === 0) {
-                // Perbaiki colspan menjadi 5
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada resep yang disimpan.</td></tr>';
-                return;
-            }
-
-            data.forEach(resep => {
-                let tr = document.createElement("tr");
-                let bahanHtml = Array.isArray(resep.bahan) && resep.bahan.length > 0
-                    ? '<ul>' + resep.bahan.map(b => `<li>${b.nama} (${b.berat}g)</li>`).join('') + '</ul>'
-                    : 'Tidak ada bahan';
-                let deskripsiSingkat = (resep.deskripsi || '').substring(0, 70) + '...';
-
-                // Buat HTML untuk gambar
-                let imgHtml = resep.gambar 
-                    ? `<img src="/static/images/${resep.gambar}" alt="${resep.judul}" style="width: 75px; height: 75px; object-fit: cover; border-radius: 4px;">` 
-                    : 'N/A';
-
-                // Buat baris tabel baru dengan kolom gambar
-                tr.innerHTML = `
-                    <td>${imgHtml}</td>
-                    <td>${resep.judul}</td>
-                    <td>${deskripsiSingkat}</td>
-                    <td>${bahanHtml}</td>
-                    <td style="white-space: nowrap; vertical-align: top;">
-                        <button class="edit" onclick="editResep('${resep.judul}')">Edit</button>
-                        <button class="delete" onclick="hapusResep('${resep.judul}')">Hapus</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        } catch (error) {
-            console.error("Error loading resep data:", error);
-            let tbody = document.querySelector("#tabel-resep tbody");
-            // Perbaiki colspan menjadi 5
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Gagal memuat data resep.</td></tr>';
-        }
-    }
-
-    // ================================================================
-    // ================== PERUBAHAN 4 (loadTabelGizi) ===================
-    // ================================================================
-    async function loadTabelGizi() {
-        try {
-            let res = await fetch("/api/admin/list", { cache: "no-store" });
-            let data = await res.json();
-            
-            const sortedNama = Object.keys(data).sort((a, b) => a.localeCompare(b));
-            let bahanSelect = document.getElementById("bahan-resep-nama");
-            let editBahanSelect = document.getElementById("edit-bahan-resep-nama"); 
-            
-            // Simpan value yang sedang dipilih (jika ada)
-            let currentBahan = bahanSelect.value;
-            let currentEditBahan = editBahanSelect.value;
-            
-            bahanSelect.innerHTML = `<option value="">- Pilih Makanan -</option>`;
-            editBahanSelect.innerHTML = `<option value="">- Pilih Makanan -</option>`;
-            
-            sortedNama.forEach(nama => {
-                bahanSelect.innerHTML += `<option value="${nama}">${nama}</option>`;
-                editBahanSelect.innerHTML += `<option value="${nama}">${nama}</option>`;
-            });
-
-            // Kembalikan value yang tadi dipilih
-            bahanSelect.value = currentBahan;
-            editBahanSelect.value = currentEditBahan;
-
-            let filterKategori = document.getElementById("filter-kategori").value;
-            let tbody = document.querySelector("#tabel-gizi tbody");
-            tbody.innerHTML = "";
-
-            const filteredKeys = sortedNama.filter(nama => {
-                if (filterKategori === "semua") {
-                    return true;
-                }
-                return data[nama].kategori === filterKategori;
-            });
-
-            if (filteredKeys.length === 0) {
-                // Perbaiki colspan menjadi 7
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Tidak ada data untuk kategori ini.</td></tr>`;
-                return;
-            }
-
-            for (const nama of filteredKeys) {
-                let makanan = data[nama];
-                const giziKeys = Object.keys(makanan.gizi || {});
-                const rowSpan = giziKeys.length > 0 ? giziKeys.length : 1;
-
-                // Buat HTML untuk gambar
-                const imgHtml = makanan.gambar 
-                    ? `<img src="/static/images/${makanan.gambar}" alt="${nama}" style="width: 75px; height: 75px; object-fit: cover; border-radius: 4px;">` 
-                    : 'N/A';
-
-                let tr = document.createElement("tr");
-                
-                // Buat baris pertama dengan rowspan
-                tr.innerHTML = `
-                    <td rowspan="${rowSpan}">${imgHtml}</td>
-                    <td rowspan="${rowSpan}" style="font-weight: bold; vertical-align: top;">${nama}</td>
-                    <td rowspan="${rowSpan}" style="vertical-align: top;">${makanan.kategori}</td>
-                `;
-
-                if (giziKeys.length > 0) {
-                    // Tambahkan data gizi pertama
-                    let giziNama = giziKeys[0];
-                    let giziData = makanan.gizi[giziNama];
-                    tr.innerHTML += `
-                        <td>${giziNama}</td>
-                        <td>${giziData.nilai}</td>
-                        <td>${giziData.satuan}</td>
+                    const imgHTML = item.gambar ? `<img src="/static/images/${item.gambar}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">` : '-';
+                    const row = `
+                        <tr>
+                            <td>${imgHTML}</td>
+                            <td>${item.nama}</td>
+                            <td>${item.kategori}</td>
+                            <td>
+                                <button class="edit" onclick="editData('${item.nama}')">Edit</button>
+                                <button class="delete" onclick="hapusData('${item.nama}')">Hapus</button>
+                            </td>
+                        </tr>
                     `;
-                } else {
-                    // Jika tidak ada data gizi
-                    tr.innerHTML += `<td colspan="3">(Tidak ada data gizi)</td>`;
+                    tbody.innerHTML += row;
+                });
+
+                // 2. Kembalikan posisi scroll jika diminta (misal setelah edit/hapus)
+                if (jagaPosisiScroll) {
+                    window.scrollTo(0, posisiScroll);
                 }
 
-                // Tambahkan tombol action
-                tr.innerHTML += `
-                    <td rowspan="${rowSpan}" style="white-space: nowrap; vertical-align: top;">
-                        <button class="edit" onclick="editData('${nama}')">Edit</button>
-                        <button class="delete" onclick="hapusData('${nama}')">Hapus</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+            } catch (error) {
+                console.error(error);
+                Toast.fire({ icon: 'error', title: 'Gagal memuat data makanan' });
+            }
+        }
 
-                // Tambahkan sisa baris gizi (jika ada)
-                if (giziKeys.length > 1) {
-                    for (let i = 1; i < giziKeys.length; i++) {
-                        let giziNama = giziKeys[i];
-                        let giziData = makanan.gizi[giziNama];
-                        let tr_extra = document.createElement("tr");
-                        tr_extra.innerHTML = `
-                            <td>${giziNama}</td>
-                            <td>${giziData.nilai}</td>
-                            <td>${giziData.satuan}</td>
-                        `;
-                        tbody.appendChild(tr_extra);
+        // Simpan Makanan (Add New)
+        document.getElementById("simpan-btn").onclick = async function() {
+            let btn = this;
+            btn.innerText = "Menyimpan...";
+            btn.disabled = true;
+
+            let formData = new FormData();
+            formData.append("nama", document.getElementById("nama").value.trim());
+            formData.append("kategori", document.getElementById("kategori").value);
+            document.querySelectorAll("#gizi-fields .gizi-field").forEach(field => {
+                let nama = field.querySelector(".gizi-nama").value;
+                if(nama) {
+                    formData.append("gizi_nama[]", nama);
+                    formData.append("gizi_nilai[]", field.querySelector(".gizi-nilai").value);
+                    formData.append("gizi_satuan[]", field.querySelector(".gizi-satuan").value);
+                }
+            });
+            let gambar = document.getElementById("gambar").files[0];
+            if(gambar) formData.append("gambar", gambar);
+            
+            try {
+                let res = await fetch("/api/admin/add", { method: "POST", body: formData });
+                let data = await res.json();
+                
+                if (data.success) {
+                    Toast.fire({ icon: 'success', title: 'Data berhasil disimpan!' });
+                    document.getElementById("form-makanan").reset();
+                    document.getElementById("gizi-fields").innerHTML = `<div class="gizi-field"><input type="text" placeholder="Nama Gizi" class="gizi-nama" list="gizi-suggestions"><input type="number" step="any" placeholder="Nilai" class="gizi-nilai"><input type="text" placeholder="Satuan" class="gizi-satuan" list="satuan-list"><button type="button" class="delete" onclick="this.parentElement.remove()">✕</button></div>`;
+                    loadTabelGizi(); 
+                } else {
+                    Toast.fire({ icon: 'error', title: data.error || "Gagal menyimpan" });
+                }
+            } catch (e) {
+                Toast.fire({ icon: 'error', title: "Terjadi kesalahan server" });
+            } finally {
+                btn.innerText = "Simpan Makanan";
+                btn.disabled = false;
+            }
+        };
+
+        // Hapus Makanan
+        async function hapusData(nama) {
+            Swal.fire({
+                title: 'Hapus data?',
+                text: `Hapus ${nama}? Data tidak bisa kembali.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#304466',
+                confirmButtonText: 'Ya, Hapus!',
+                background: '#112240', color: '#fff'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        let res = await fetch("/api/admin/delete", { 
+                            method: "POST", 
+                            headers: {"Content-Type": "application/json"}, 
+                            body: JSON.stringify({ nama }) 
+                        });
+                        let data = await res.json();
+                        if(data.success) {
+                            Toast.fire({ icon: 'success', title: 'Terhapus' });
+                            // PERBAIKAN SCROLL: Panggil dengan parameter TRUE
+                            loadTabelGizi(true);
+                        } else {
+                            Toast.fire({ icon: 'error', title: data.error });
+                        }
+                    } catch(e) {
+                        Toast.fire({ icon: 'error', title: "Gagal menghapus" });
                     }
                 }
-            }
-        } catch (error) {
-            console.error("Error loading gizi data:", error);
-            let tbody = document.querySelector("#tabel-gizi tbody");
-            // Perbaiki colspan menjadi 7
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Gagal memuat data.</td></tr>`;
-        }
-    }
-    
-    async function hapusResep(judul) {
-        if (!confirm(`Apakah Anda yakin ingin menghapus resep '${judul}'?`)) {
-            return; 
-        }
-        try {
-            let res = await fetch("/api/admin/delete_resep", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nama: judul }) 
             });
-            let data = await res.json();
-            if (data.success) {
-                showInfo("Resep berhasil dihapus!", "success");
-                loadTabelResep(); 
-            } else {
-                showInfo("Gagal menghapus resep: " + (data.error || "Terjadi kesalahan"), "error");
-            }
-        } catch (error) {
-            console.error("Error saat menghapus resep:", error);
-            showInfo("Gagal menghubungi server.", "error");
         }
-    }
-    
-    function showInfo(message, type) { let infoDiv = document.getElementById("global-info"); window.scrollTo({ top: 0, behavior: 'smooth' }); infoDiv.innerHTML = `<div class="info ${type}">${message}</div>`; setTimeout(() => { infoDiv.innerHTML = ''; }, 5000); }
-    function closeModal() { document.getElementById("modal-edit").style.display = "none"; }
-    function closeModalResep() { document.getElementById("modal-edit-resep").style.display = "none"; }
-    
-    document.addEventListener("DOMContentLoaded", () => { 
-        loadTabelGizi(); 
-        loadTabelResep(); 
-        window.onclick = function(event) { 
-            let modal = document.getElementById("modal-edit"); 
-            let modalResep = document.getElementById("modal-edit-resep"); 
-            if (event.target == modal) closeModal(); 
-            if (event.target == modalResep) closeModalResep(); 
-        } 
-    });
-</script>
 
-<datalist id="satuan-list"> <option value="g"></option> <option value="mg"></option> <option value="mcg"></option> <option value="kal"></option> <option value="IU"></option> <option value="mg NE"></option> <option value="mg TE"></option> </datalist>
-<datalist id="gizi-suggestions"> <option value="Energi"></option> <option value="Protein"></option> <option value="Lemak"></option> <option value="Karbohidrat"></option> <option value="Serat"></option> <option value="Gula"></option> <option value="Kalsium"></option> <option value="Zat Besi"></option> <option value="Magnesium"></option> <option value="Fosfor"></option> <option value="Kalium"></option> <option value="Natrium"></option> <option value="Seng"></option> <option value="Vitamin A"></option> <option value="Vitamin C"></option> <option value="Vitamin D"></option> <option value="Vitamin E"></option> <option value="Vitamin K"></option> <option value="Thiamin (B1)"></option> <option value="Riboflavin (B2)"></option> <option value="Niacin (B3)"></option> <option value="Vitamin B6"></option> <option value="Folat"></option> <option value="Vitamin B12"></option> </datalist>
+        // Edit Makanan (Buka Modal)
+        async function editData(nama) {
+            try {
+                let res = await fetch("/api/admin/list");
+                let data = await res.json();
+                let item = data[nama]; // Akses langsung dari Dictionary Key
+                
+                if (item) {
+                    document.getElementById("edit-old-nama").value = nama; // Key asli
+                    document.getElementById("edit-nama").value = nama;
+                    document.getElementById("edit-kategori").value = item.kategori;
+                    
+                    let container = document.getElementById("edit-gizi-fields");
+                    container.innerHTML = '';
+                    
+                    if (item.gizi && Object.keys(item.gizi).length > 0) {
+                        for (const [k, v] of Object.entries(item.gizi)) {
+                            let div = document.createElement("div");
+                            div.className = "gizi-field";
+                            div.innerHTML = `<input type="text" value="${k}" class="edit-gizi-nama" list="gizi-suggestions"><input type="number" step="any" value="${v.nilai}" class="edit-gizi-nilai"><input type="text" value="${v.satuan}" class="edit-gizi-satuan" list="satuan-list"><button type="button" class="delete" onclick="this.parentElement.remove()">✕</button>`;
+                            container.appendChild(div);
+                        }
+                    } else {
+                        addEditField();
+                    }
+                    
+                    let imgDiv = document.getElementById("current-image");
+                    imgDiv.innerHTML = item.gambar ? `<img src="/static/images/${item.gambar}" style="max-width:100px; border-radius:4px">` : 'Tidak ada gambar';
+                    
+                    document.getElementById("modal-edit").style.display = "block";
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // Update Makanan (Simpan Edit)
+        document.getElementById("update-btn").onclick = async function() {
+            let formData = new FormData();
+            formData.append("old_nama", document.getElementById("edit-old-nama").value);
+            formData.append("nama", document.getElementById("edit-nama").value.trim());
+            formData.append("kategori", document.getElementById("edit-kategori").value);
+            
+            document.querySelectorAll("#edit-gizi-fields .gizi-field").forEach(field => {
+                let nama = field.querySelector(".edit-gizi-nama").value;
+                if(nama) {
+                    formData.append("gizi_nama[]", nama);
+                    formData.append("gizi_nilai[]", field.querySelector(".edit-gizi-nilai").value);
+                    formData.append("gizi_satuan[]", field.querySelector(".edit-gizi-satuan").value);
+                }
+            });
+            
+            let gambar = document.getElementById("edit-gambar").files[0];
+            if (gambar) formData.append("gambar", gambar);
+            
+            try {
+                let res = await fetch("/api/admin/edit", { method: "POST", body: formData });
+                let data = await res.json();
+                if (data.success) {
+                    Toast.fire({ icon: 'success', title: 'Data berhasil diupdate!' });
+                    closeModal();
+                    
+                    // PERBAIKAN SCROLL: Panggil dengan parameter TRUE
+                    loadTabelGizi(true);
+                } else {
+                    Toast.fire({ icon: 'error', title: data.error });
+                }
+            } catch(e) {
+                Toast.fire({ icon: 'error', title: 'Gagal update' });
+            }
+        };
+
+
+        // --- LOGIKA RESEP (AJAX) ---
+
+        function tambahBahan() {
+            let nama = document.getElementById("bahan-resep-nama").value;
+            let berat = document.getElementById("bahan-resep-berat").value;
+            if(nama && berat > 0) {
+                if(bahanResep.find(b => b.nama === nama)) {
+                    Toast.fire({icon: 'warning', title: 'Bahan sudah ada'});
+                    return;
+                }
+                bahanResep.push({nama, berat});
+                renderBahan();
+                document.getElementById("bahan-resep-nama").value = "";
+                document.getElementById("bahan-resep-berat").value = "";
+            } else {
+                Toast.fire({icon: 'warning', title: 'Isi nama dan berat bahan'});
+            }
+        }
+
+        function renderBahan() {
+            let ul = document.getElementById("daftar-bahan");
+            ul.innerHTML = "";
+            bahanResep.forEach((b, i) => {
+                ul.innerHTML += `<li class="bahan-list-item"><span>${b.nama} (${b.berat}g)</span> <button type="button" class="delete" onclick="hapusBahan(${i})">Hapus</button></li>`;
+            });
+        }
+        function hapusBahan(i) { bahanResep.splice(i, 1); renderBahan(); }
+
+        // Load Tabel Resep
+        async function loadTabelResep() {
+            let tbody = document.getElementById("tbody-resep");
+            // Tidak perlu menghapus innerHTML "Memuat..." untuk resep agar tidak flicker juga
+            
+            try {
+                let res = await fetch("/api/admin/list_resep");
+                let data = await res.json();
+                tbody.innerHTML = "";
+                
+                if(data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center">Belum ada resep.</td></tr>';
+                    return;
+                }
+
+                data.forEach(r => {
+                    let imgHtml = r.gambar ? `<img src="/static/images/${r.gambar}" style="width:40px; height:40px; object-fit:cover; border-radius:4px">` : '-';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${imgHtml}</td>
+                            <td>${r.judul}</td>
+                            <td>
+                                <button class="edit" onclick="editResep('${r.judul}')">Edit</button>
+                                <button class="delete" onclick="hapusResep('${r.judul}')">Hapus</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // Simpan Resep
+        document.getElementById("simpan-resep-btn").onclick = async function() {
+            let btn = this;
+            btn.innerText = "Menyimpan...";
+            btn.disabled = true;
+
+            let formData = new FormData();
+            formData.append("judul", document.getElementById("judul-resep").value);
+            formData.append("deskripsi", document.getElementById("deskripsi").value);
+            formData.append("bahan", JSON.stringify(bahanResep));
+            let gambar = document.getElementById("gambar-resep").files[0];
+            if(gambar) formData.append("gambar", gambar);
+
+            try {
+                let res = await fetch("/api/admin/add_resep", { method: "POST", body: formData });
+                let data = await res.json();
+                if(data.success) {
+                    Toast.fire({ icon: 'success', title: 'Resep disimpan!' });
+                    document.getElementById("form-resep").reset();
+                    bahanResep = [];
+                    renderBahan();
+                    loadTabelResep();
+                } else {
+                    Toast.fire({ icon: 'error', title: data.error });
+                }
+            } catch (e) {
+                Toast.fire({ icon: 'error', title: "Gagal simpan resep" });
+            } finally {
+                btn.innerText = "Simpan Resep";
+                btn.disabled = false;
+            }
+        };
+
+        // Hapus Resep
+        async function hapusResep(judul) {
+            Swal.fire({
+                title: 'Hapus Resep?',
+                text: `Hapus resep '${judul}'?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#304466',
+                confirmButtonText: 'Ya, Hapus!',
+                background: '#112240', color: '#fff'
+            }).then(async (result) => {
+                if(result.isConfirmed) {
+                    try {
+                        let res = await fetch("/api/admin/delete_resep", {
+                            method: "POST", headers: {"Content-Type": "application/json"},
+                            body: JSON.stringify({ nama: judul })
+                        });
+                        let data = await res.json();
+                        if(data.success) {
+                            Toast.fire({ icon: 'success', title: 'Resep dihapus' });
+                            loadTabelResep();
+                        } else { Toast.fire({ icon: 'error', title: data.error }); }
+                    } catch(e) { Toast.fire({ icon: 'error', title: "Error" }); }
+                }
+            });
+        }
+        
+        // --- LOGIKA EDIT RESEP ---
+        function tambahBahanEdit() {
+            let nama = document.getElementById("edit-bahan-resep-nama").value;
+            let berat = document.getElementById("edit-bahan-resep-berat").value;
+            if(nama && berat > 0) {
+                if(bahanResepEdit.find(b => b.nama === nama)) {
+                    Toast.fire({icon: 'warning', title: 'Bahan sudah ada'}); return;
+                }
+                bahanResepEdit.push({nama, berat});
+                renderBahanEdit();
+                document.getElementById("edit-bahan-resep-nama").value = "";
+                document.getElementById("edit-bahan-resep-berat").value = "";
+            }
+        }
+        function renderBahanEdit() {
+            let ul = document.getElementById("edit-daftar-bahan");
+            ul.innerHTML = "";
+            bahanResepEdit.forEach((b, i) => {
+                ul.innerHTML += `<li class="bahan-list-item"><span>${b.nama} (${b.berat}g)</span> <button type="button" class="delete" onclick="hapusBahanEdit(${i})">Hapus</button></li>`;
+            });
+        }
+        function hapusBahanEdit(i) { bahanResepEdit.splice(i, 1); renderBahanEdit(); }
+
+        async function editResep(judul) {
+            try {
+                let res = await fetch("/api/admin/list_resep");
+                let data = await res.json();
+                let r = data.find(item => item.judul === judul);
+                if(r) {
+                    document.getElementById("edit-old-judul").value = r.judul;
+                    document.getElementById("edit-judul-resep").value = r.judul;
+                    document.getElementById("edit-deskripsi-resep").value = r.deskripsi;
+                    
+                    bahanResepEdit = r.bahan ? [...r.bahan] : [];
+                    renderBahanEdit();
+                    
+                    document.getElementById("current-resep-image").innerHTML = r.gambar ? `<img src="/static/images/${r.gambar}" style="max-width:100px; border-radius:4px">` : 'Tidak ada gambar';
+                    document.getElementById("modal-edit-resep").style.display = "block";
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        function closeModal() { document.getElementById("modal-edit").style.display = "none"; }
+        function closeModalResep() { document.getElementById("modal-edit-resep").style.display = "none"; }
+
+        document.getElementById("update-resep-btn").onclick = async function() {
+            let formData = new FormData();
+            formData.append("old_judul", document.getElementById("edit-old-judul").value);
+            formData.append("judul", document.getElementById("edit-judul-resep").value);
+            formData.append("deskripsi", document.getElementById("edit-deskripsi-resep").value);
+            formData.append("bahan", JSON.stringify(bahanResepEdit));
+            let gambar = document.getElementById("edit-gambar-resep").files[0];
+            if(gambar) formData.append("gambar", gambar);
+
+            try {
+                let res = await fetch("/api/admin/edit_resep", { method: "POST", body: formData });
+                let data = await res.json();
+                if(data.success) {
+                    Toast.fire({ icon: 'success', title: 'Resep diupdate!' });
+                    closeModalResep();
+                    loadTabelResep();
+                } else { Toast.fire({ icon: 'error', title: data.error }); }
+            } catch(e) { Toast.fire({ icon: 'error', title: "Gagal update" }); }
+        };
+        document.addEventListener("DOMContentLoaded", () => {
+            loadTabelGizi();
+            loadTabelResep();
+        });
+        window.onclick = function(e) {
+            if(e.target == document.getElementById("modal-edit")) closeModal();
+            if(e.target == document.getElementById("modal-edit-resep")) closeModalResep();
+        }
+
+    </script>
+
+    <datalist id="satuan-list"> <option value="g"></option> <option value="mg"></option> <option value="mcg"></option> <option value="kal"></option> <option value="IU"></option> </datalist>
+    <datalist id="gizi-suggestions"> <option value="Energi"></option> <option value="Protein"></option> <option value="Lemak"></option> <option value="Karbohidrat"></option> <option value="Vitamin A"></option> <option value="Vitamin C"></option> </datalist>
 </body>
 </html>
