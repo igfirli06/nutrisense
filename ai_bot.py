@@ -7,46 +7,65 @@ from langchain_community.agent_toolkits import create_sql_agent
 from langchain_core.messages import HumanMessage, AIMessage
 
 # --- KONFIGURASI ---
-# 1. API KEY PROJECT BARU
 GOOGLE_API_KEY = "" 
 TELEGRAM_TOKEN = ''
 DB_PASSWORD = ""
 
-# Setup
+# Setup Environment
 os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
 DB_URI = f"postgresql://postgres:{DB_PASSWORD}@localhost:5432/nutrisense"
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
-print("⚙️ Menghubungkan ke Gemini Flash Latest (Mode Strict)...")
+print("⚙️ Menghubungkan ke Google AI (Mode Full Text)...")
 
 try:
-    # Model Setup
+    # --- MODEL SETUP (DENGAN "NAPAS" LEBIH PANJANG) ---
     llm = ChatGoogleGenerativeAI(
         model="gemini-flash-latest", 
-        temperature=0
+        temperature=0,
+        max_output_tokens=2048  # <--- INI PENTING: Biar dia gak berhenti di tengah jalan
     )
 
-    db = SQLDatabase.from_uri(DB_URI)
+    db = SQLDatabase.from_uri(
+        DB_URI,
+        include_tables=['makanan', 'gizi', 'resep', 'bahan_resep'],
+        sample_rows_in_table_info=0
+    )
+    
     toolkit = SQLDatabaseToolkit(db=db, llm=llm)
-    print("✅ Siap!")
+    print("✅ Siap! Terhubung.")
 
 except Exception as e:
     print(f"❌ Error Setup: {e}")
 
-# --- PERUBAHAN PENTING DI SINI (SYSTEM PROMPT) ---
-# Kita paksa dia pakai Step-by-Step agar tidak halusinasi ID
+# --- SYSTEM PROMPT (PERINTAH JANGAN SINGKAT) ---
+# Perhatikan bagian "CRITICAL RULES" di bawah ini.
 system_instruction = """
-Kamu adalah Data Analyst Nutrisense.
-Tugas: Menjawab pertanyaan user dengan data dari database SQL.
+You are a SQL Agent for Nutrisense.
 
-ATURAN WAJIB (STRICT RULES):
-1. JANGAN PERNAH menebak ID makanan. Kamu TIDAK TAHU ID sebelum mengeceknya.
-2. Langkah PERTAMA selalu: Cek tabel `makanan` menggunakan `ILIKE`.
-   Contoh: SELECT * FROM makanan WHERE nama_makanan ILIKE '%anggur%';
-3. Setelah dapat ID dari langkah 2, baru cari gizinya di tabel `gizi`.
-4. Jika Query SQL error, coba perbaiki query-nya.
-5. Jawab dalam Bahasa Indonesia yang ramah.
-6. Jika error parsing terjadi, ulangi dan berikan jawaban final langsung.
+DATABASE CHEAT SHEET:
+1. `makanan` (id, nama_makanan)
+2. `gizi` (id, id_makanan, kalori, protein, lemak, karbohidrat)
+3. `resep` (id, judul, deskripsi, gambar) -> Column name is 'judul'.
+4. `bahan_resep` (id, resep_id, makanan_id, berat)
+
+TASKS:
+1. If user asks for recipes, query `resep` AND `bahan_resep`.
+2. If user asks for nutrition, query `gizi` joined with `makanan`.
+
+CRITICAL RULES FOR RECIPES:
+- When you find a recipe, output the `deskripsi` column **EXACTLY AS IT IS**.
+- **DO NOT SUMMARIZE** the description.
+- **DO NOT TRUNCATE** or cut off the text.
+- **DO NOT USE ELLIPSIS (...)**. Show every single step completely.
+- Answer in INDONESIAN language.
+
+FORMAT:
+Thought: [Reasoning]
+Action: sql_db_query
+Action Input: [SQL Query]
+Observation: [Result]
+Final Answer: [FULL Indonesian Answer without summarizing]
 """
 
 user_memories = {}
@@ -55,38 +74,45 @@ def get_ai_response(user_id, user_message):
     if user_id not in user_memories:
         user_memories[user_id] = []
     
-    # History pendek
     history = user_memories[user_id][-2:]
     context_str = "\n".join([f"{msg.type}: {msg.content}" for msg in history])
     
     agent = create_sql_agent(
         llm=llm,
         toolkit=toolkit,
-        verbose=True, # Kita lihat log-nya
+        verbose=True,
         agent_type="zero-shot-react-description",
-        handle_parsing_errors="Check your output and make sure it returns a string as Final Answer.", # <-- AUTO FIX ERROR
+        handle_parsing_errors=True,
         prefix=system_instruction
     )
 
     try:
-        full_query = f"Context:\n{context_str}\n\nUser Question: {user_message}"
+        full_query = f"Context:\n{context_str}\n\nQuestion: {user_message}"
         result = agent.invoke({"input": full_query})
-        response = result['output']
+        response = result.get('output', "Maaf, gagal memproses data.")
         
         user_memories[user_id].append(HumanMessage(content=user_message))
         user_memories[user_id].append(AIMessage(content=response))
         return response
 
     except Exception as e:
-        print(f"⚠️ ERROR SYSTEM: {e}")
-        return "Maaf, data tidak ditemukan atau ada gangguan sistem. Coba nama makanan lain."
+        error_msg = str(e)
+        print(f"⚠️ ERROR SYSTEM: {error_msg}")
+        
+        if "429" in error_msg:
+             return "⏳ Sabar ya, kuota Google Gratisan lagi penuh. Tunggu 1 menit lagi."
+        
+        return "Maaf, sistem sedang sibuk."
 
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
     print(f"📩 Chat Masuk: {message.text}")
-    bot.send_chat_action(message.chat.id, 'typing')
-    jawaban = get_ai_response(message.chat.id, message.text)
-    bot.reply_to(message, jawaban)
+    try:
+        bot.send_chat_action(message.chat.id, 'typing')
+        jawaban = get_ai_response(message.chat.id, message.text)
+        bot.reply_to(message, jawaban)
+    except Exception as e:
+        print(f"❌ Error Telegram: {e}")
 
-print("✅ Bot Jalan!")
+print("✅ Bot Jalan! (Tekan Ctrl+C untuk stop)")
 bot.infinity_polling()
