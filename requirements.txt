@@ -1,4 +1,3 @@
 flask
 gunicorn
-psycopg2-binary
-# Tambahkan library lain yang Anda gunakan (contoh: opencv-python, pandas, dll)
+pg8000==1.31.2

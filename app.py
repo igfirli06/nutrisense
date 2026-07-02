@@ -17,7 +17,7 @@ if not DATABASE_URL:
     # Mengarah langsung ke file nutrisi.db yang kamu upload
     DATABASE_URL = 'sqlite:///' + os.path.join(os.path.dirname(__file__), 'nutrisi.db')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.slthdjtwnlubfbfbynax:Igfirli_cintam1ng@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+pg8000://postgres.slthdjtwnlubfbfbynax:Igfirli_cintam1ng@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_recycle': 3600,
