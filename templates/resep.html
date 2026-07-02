@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <title>Resep: {{ hasil[0].nama_resep if hasil else "Tidak Ditemukan" }}</title>
+    <title>Resep: {{ bahan | title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,10 +17,58 @@
         .container {
             max-width: 1100px;
             margin: 0 auto;
-            background: #112240; /* Lighter navy for container */
+        }
+        
+        /* Navigasi */
+        .nav-header {
+            margin-bottom: 25px;
+        }
+        .nav-kembali {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #304466;
+            color: #e6f1ff;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+        .nav-kembali:hover { background: #415a86; }
+
+        /* Menu Daftar Isi jika resep > 1 */
+        .daftar-resep-menu {
+            background: #112240;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #64ffda;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .daftar-resep-menu h3 { margin-top: 0; color: #e6f1ff; }
+        .daftar-resep-menu ul {
+            list-style: none; padding: 0; margin: 0;
+            display: flex; gap: 10px; flex-wrap: wrap;
+        }
+        .daftar-resep-menu a {
+            color: #0a192f;
+            text-decoration: none;
+            background: #64ffda;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        .daftar-resep-menu a:hover { opacity: 0.8; }
+
+        /* Styling untuk tiap item resep (Card Style) */
+        .resep-card {
+            background: #112240;
             padding: 30px;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            margin-bottom: 40px; /* Jarak antar resep */
+            border: 1px solid #172a45;
         }
         .resep-layout { display: flex; gap: 40px; }
         .kolom-kiri { flex: 0 0 35%; }
@@ -38,18 +86,19 @@
             margin-top: 0;
             margin-bottom: 25px;
             line-height: 1.2;
-            color: #e6f1ff; /* Brighter text for title */
+            color: #e6f1ff; 
         }
         h2 {
             font-family: 'Source Serif 4', serif;
-            font-size: 1.8em;
+            font-size: 1.6em;
             padding-bottom: 10px;
-            border-bottom: 2px solid #172a45; /* Darker navy border */
+            border-bottom: 2px solid #172a45; 
             margin-top: 25px;
             margin-bottom: 15px;
             color: #e6f1ff;
         }
         .kolom-kiri h2:first-of-type { margin-top: 0; }
+        
         .bahan-list { padding-left: 0; list-style: none; }
         .bahan-list li {
             display: flex;
@@ -69,30 +118,19 @@
             transition: background 0.3s;
         }
         .info-gizi-btn:hover { background: #415a86; }
-        .cara-membuat { padding-left: 25px; list-style: none; counter-reset: steps-counter; }
+        
+        /* Perbaikan List Cara Membuat (Modern Block Style) */
+        .cara-membuat { padding-left: 0; list-style: none; }
         .cara-membuat li {
-            counter-increment: steps-counter;
-            margin-bottom: 20px;
-            line-height: 1.7;
-            position: relative;
+            background-color: #172a45;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            line-height: 1.6;
+            border-left: 4px solid #64ffda; /* Garis aksen di sebelah kiri */
+            color: #ccd6f6;
         }
-        .cara-membuat li::before {
-            content: counter(steps-counter);
-            position: absolute;
-            left: -35px;
-            top: 0;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #0a192f; /* Dark text for contrast */
-            background-color: #64ffda; /* Accent color */
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-        }
+        
         .gizi-table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
         .gizi-table th, .gizi-table td {
             text-align: left;
@@ -101,30 +139,19 @@
         }
         .gizi-table th {
             font-weight: bold;
-            color: #a8b2d1; /* Lighter text for headers */
+            color: #a8b2d1; 
         }
-        .nav-kembali {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 8px 16px;
-            background: #304466;
-            color: #e6f1ff;
-            text-decoration: none;
-            border-radius: 20px;
-            font-size: 0.9em;
-            transition: background 0.3s;
-        }
-        .nav-kembali:hover { background: #415a86; }
         
         /* CSS Untuk Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); align-items: center; justify-content: center; }
         .modal.show { display: flex; }
         .modal-content {
-            background: #112240; /* Modal background */
+            background: #112240; 
             padding: 25px;
             border-radius: 8px;
             width: 90%;
             max-width: 400px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.5);
         }
         .modal-header {
             display: flex;
@@ -138,62 +165,83 @@
         .close-btn { background: none; border: none; font-size: 1.5em; cursor: pointer; color: #a8b2d1; }
         .modal-body table { width: 100%; border-collapse: collapse; }
         .modal-body td { padding: 6px 0; border-bottom: 1px solid #172a45; }
-        .no-resep h2 { border-bottom: none; }
+        .no-resep { background: #112240; padding: 30px; border-radius: 12px; text-align: center; }
+        .no-resep h2 { border-bottom: none; display: inline-block; }
 
         @media (max-width: 800px) { .resep-layout { flex-direction: column; } .kolom-kiri { flex: 1; } }
     </style>
 </head>
 <body>
 <div class="container">
-    <a href="/" class="nav-kembali">← Kembali ke Home</a>
+    <div class="nav-header">
+        <a href="/" class="nav-kembali">← Kembali ke Home</a>
+    </div>
     
     {% if hasil %}
-        {% for r in hasil %}
-        <div class="resep-layout">
-            <div class="kolom-kiri">
-                <img src="{{ url_for('static', filename='images/' + r.gambar) if r.gambar else 'https://via.placeholder.com/400x300.png?text=Gambar+Tidak+Tersedia' }}" alt="{{ r.nama_resep }}" class="gambar-resep">
-                
-                <h2>Bahan-bahan</h2>
-                <ul class="bahan-list">
-                    {% for b in r.bahan %}
-                    <li>
-                        <span>{{ b.nama | title }} <strong>({{ b.berat }} gr)</strong></span>
-                        <button class="info-gizi-btn" onclick='showGiziBahan(`{{ b.nama | title }}`, {{ b.gizi_mentah | tojson }})'>Info Gizi</button>
-                    </li>
-                    {% endfor %}
-                </ul>
+        
+        <!-- Menu Daftar Isi (Hanya muncul jika resep lebih dari 1) -->
+        {% if hasil|length > 1 %}
+        <div class="daftar-resep-menu">
+            <h3>Daftar Resep Ditemukan:</h3>
+            <ul>
+                {% for r in hasil %}
+                <li><a href="#resep-{{ loop.index }}">{{ r.nama_resep | title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
 
-                <h2>Informasi Gizi Total Resep</h2>
-                <table class="gizi-table">
-                    <thead>
-                        <tr><th>Jenis Gizi</th><th>Jumlah</th><th>Satuan</th></tr>
-                    </thead>
-                    <tbody>
-                        {% for gizi_nama, gizi_nilai in r.gizi.items() %}
-                        <tr>
-                            <td>{{ gizi_nama | title }}</td>
-                            <td>{{ gizi_nilai }}</td>
-                            <td>{{ r.satuan.get(gizi_nama, 'g') }}</td>
-                        </tr>
+        {% for r in hasil %}
+        <!-- Setiap resep menjadi Card / List mandiri -->
+        <div class="resep-card" id="resep-{{ loop.index }}">
+            <div class="resep-layout">
+                <div class="kolom-kiri">
+                    <img src="{{ url_for('static', filename='images/' + r.gambar) if r.gambar else 'https://via.placeholder.com/400x300.png?text=Gambar+Tidak+Tersedia' }}" alt="{{ r.nama_resep }}" class="gambar-resep">
+                    
+                    <h2>Bahan-bahan</h2>
+                    <ul class="bahan-list">
+                        {% for b in r.bahan %}
+                        <li>
+                            <span>{{ b.nama | title }} <strong>({{ b.berat }} gr)</strong></span>
+                            <button class="info-gizi-btn" onclick='showGiziBahan(`{{ b.nama | title }}`, {{ b.gizi_mentah | tojson }})'>Info Gizi</button>
+                        </li>
                         {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="kolom-kanan">
-                <h1 class="resep-judul">{{ r.nama_resep | title }}</h1>
+                    </ul>
+
+                    <h2>Informasi Gizi Total</h2>
+                    <table class="gizi-table">
+                        <thead>
+                            <tr><th>Jenis Gizi</th><th>Jumlah</th><th>Satuan</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for gizi_nama, gizi_nilai in r.gizi.items() %}
+                            <tr>
+                                <td>{{ gizi_nama | title }}</td>
+                                <td>{{ gizi_nilai }}</td>
+                                <td>{{ r.satuan.get(gizi_nama, 'g') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 
-                <h2>Cara Membuat</h2>
-                <ol class="cara-membuat">
-                    {% for langkah in r.langkah %}
-                    <li>{{ langkah }}</li>
-                    {% else %}
-                    <li>Deskripsi cara membuat tidak tersedia.</li>
-                    {% endfor %}
-                </ol>
+                <div class="kolom-kanan">
+                    <h1 class="resep-judul">{{ r.nama_resep | title }}</h1>
+                    
+                    <h2>Cara Membuat</h2>
+                    <!-- List cara membuat dirubah menggunakan div list style tanpa bullet otomatis -->
+                    <ul class="cara-membuat">
+                        {% for langkah in r.langkah %}
+                        <li>{{ langkah }}</li>
+                        {% else %}
+                        <li>Deskripsi cara membuat tidak tersedia.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
         {% endfor %}
+        
     {% else %}
         <div class="no-resep">
             <h2>Resep Tidak Ditemukan</h2>
@@ -217,10 +265,10 @@
 <script>
     function showGiziBahan(namaBahan, dataGizi) {
         const modal = document.getElementById('gizi-bahan-modal');
-        document.getElementById('modal-title').innerText = `Info Gizi: ${namaBahan} (per 100 gram)`;
+        document.getElementById('modal-title').innerText = `Info Gizi: ${namaBahan} (per bahan)`;
         
         const table = document.getElementById('modal-table');
-        table.innerHTML = ''; // Kosongkan tabel
+        table.innerHTML = ''; 
 
         for (const [giziNama, giziData] of Object.entries(dataGizi)) {
             let row = table.insertRow();

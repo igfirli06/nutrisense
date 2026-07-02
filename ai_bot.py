@@ -19,11 +19,11 @@ bot = telebot.TeleBot(TELEGRAM_TOKEN)
 print("⚙️ Menghubungkan ke Google AI (Mode Full Text)...")
 
 try:
-    # --- MODEL SETUP (DENGAN "NAPAS" LEBIH PANJANG) ---
+
     llm = ChatGoogleGenerativeAI(
         model="gemini-flash-latest", 
         temperature=0,
-        max_output_tokens=2048  # <--- INI PENTING: Biar dia gak berhenti di tengah jalan
+        max_output_tokens=2048  
     )
 
     db = SQLDatabase.from_uri(
