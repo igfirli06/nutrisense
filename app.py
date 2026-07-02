@@ -229,22 +229,24 @@ def admin_list_makanan():
 @app.route("/api/admin/add", methods=["POST"])
 def admin_add_makanan():    
     try:        
-        nama = request.form.get("nama", "").lower().strip()        
-        kategori = request.form.get("kategori", "").lower()        
-        if not nama or kategori not in ALLOWED_CATEGORIES:            
-            return jsonify({"success": False, "error": "Nama dan kategori valid wajib diisi"}), 400        
-        filename = ""        
-        if "gambar" in request.files and request.files["gambar"].filename:            
-            file = request.files["gambar"]            
-            filename = secure_filename(f"{nama}_{file.filename}")            
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))        
-        new_makanan = Makanan(nama=nama, kategori=kategori, gambar=filename)        
+        req = request.get_json() # Ambil data JSON dari HTML
+        nama = req.get("nama", "").lower().strip()        
+        kategori = req.get("kategori", "").lower()        
+        
+        # HAPUS logika request.files dan file.save. Langsung ambil URL!
+        gambar_url = req.get("gambar", "").strip()        
+        
+        new_makanan = Makanan(nama=nama, kategori=kategori, gambar=gambar_url)        
         db.session.add(new_makanan)        
-        gizi_keys = request.form.getlist("gizi_nama[]")        
-        gizi_vals = request.form.getlist("gizi_nilai[]")        
-        gizi_satuans = request.form.getlist("gizi_satuan[]")        
+        
+        gizi_keys = req.get("gizi_nama", [])        
+        gizi_vals = req.get("gizi_nilai", [])        
+        gizi_satuans = req.get("gizi_satuan", [])        
+        
         for k, v, s in zip(gizi_keys, gizi_vals, gizi_satuans):            
-            nama_gizi_bersih, nilai_str_bersih, satuan_bersih = k.strip(), v.strip().replace(",", "."), s.strip()            
+            nama_gizi_bersih = k.strip()
+            nilai_str_bersih = str(v).strip().replace(",", ".")
+            satuan_bersih = s.strip()            
             if nama_gizi_bersih and nilai_str_bersih and satuan_bersih:                
                 try:                    
                     db.session.add(Gizi(                        
@@ -256,11 +258,7 @@ def admin_add_makanan():
                 except ValueError:                    
                     db.session.rollback()                    
                     return jsonify({"success": False, "error": f"Nilai '{v}' tidak valid."}), 400            
-            elif any([nama_gizi_bersih, nilai_str_bersih, satuan_bersih]):                
-                db.session.rollback()                
-                return jsonify({"success": False, "error": "Data gizi tidak lengkap."}), 400                
         
-        # --- FIX: Peletakan indentasi commit dipindahkan ke luar loop dengan benar ---
         db.session.commit()        
         return jsonify({"success": True})    
     except IntegrityError:        
@@ -273,27 +271,25 @@ def admin_add_makanan():
 @app.route("/api/admin/edit", methods=["POST"])
 def admin_edit_makanan():    
     try:        
-        old_nama = request.form.get("old_nama", "").lower().strip()        
+        req = request.get_json()
+        old_nama = req.get("old_nama", "").lower().strip()        
         makanan = Makanan.query.filter_by(nama=old_nama).first()        
         if not makanan:            
             return jsonify({"success": False, "error": "Data lama tidak ditemukan"}), 404        
-        makanan.nama = request.form.get("nama", "").lower().strip()        
-        makanan.kategori = request.form.get("kategori", "").lower()        
-        if not makanan.nama or makanan.kategori not in ALLOWED_CATEGORIES:            
-            return jsonify({"success": False, "error": "Nama dan kategori baru wajib valid"}), 400        
-        if "gambar" in request.files and request.files["gambar"].filename:            
-            if makanan.gambar and os.path.exists(os.path.join(IMAGE_FOLDER, makanan.gambar)):                
-                os.remove(os.path.join(IMAGE_FOLDER, makanan.gambar))            
-            file = request.files["gambar"]            
-            filename = secure_filename(f"{makanan.nama}_{file.filename}")            
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))            
-            makanan.gambar = filename        
+        
+        makanan.nama = req.get("nama", "").lower().strip()        
+        makanan.kategori = req.get("kategori", "").lower()        
+        makanan.gambar = req.get("gambar", "").strip() # Ambil URL Gambar langsung
+        
         Gizi.query.filter_by(makanan_id=makanan.id).delete()                 
-        gizi_keys = request.form.getlist("gizi_nama[]")        
-        gizi_vals = request.form.getlist("gizi_nilai[]")        
-        gizi_satuans = request.form.getlist("gizi_satuan[]")        
+        
+        gizi_keys = req.get("gizi_nama", [])        
+        gizi_vals = req.get("gizi_nilai", [])        
+        gizi_satuans = req.get("gizi_satuan", [])        
         for k, v, s in zip(gizi_keys, gizi_vals, gizi_satuans):            
-            nama_gizi_bersih, nilai_str_bersih, satuan_bersih = k.strip(), v.strip().replace(",", "."), s.strip()            
+            nama_gizi_bersih = k.strip()
+            nilai_str_bersih = str(v).strip().replace(",", ".")
+            satuan_bersih = s.strip()            
             if nama_gizi_bersih and nilai_str_bersih and satuan_bersih:                
                 try:                    
                     db.session.add(Gizi(                        
@@ -305,9 +301,7 @@ def admin_edit_makanan():
                 except ValueError:                    
                     db.session.rollback()                    
                     return jsonify({"success": False, "error": f"Nilai '{v}' tidak valid."}), 400            
-            elif any([nama_gizi_bersih, nilai_str_bersih, satuan_bersih]):                
-                db.session.rollback()                
-                return jsonify({"success": False, "error": "Data gizi tidak lengkap."}), 400        
+        
         db.session.commit()        
         return jsonify({"success": True})    
     except IntegrityError:        
@@ -322,12 +316,82 @@ def admin_delete_makanan():
     nama = request.json.get("nama", "").lower()    
     makanan = Makanan.query.filter_by(nama=nama).first()    
     if makanan:        
-        if makanan.gambar and os.path.exists(os.path.join(IMAGE_FOLDER, makanan.gambar)):            
-            os.remove(os.path.join(IMAGE_FOLDER, makanan.gambar))        
+        # HAPUS LOGIKA os.remove YANG BIKIN ERROR READ-ONLY
         db.session.delete(makanan)        
         db.session.commit()        
         return jsonify({"success": True})    
     return jsonify({"success": False, "error": "Data tidak ditemukan"}), 404
+
+@app.route("/api/admin/add_resep", methods=["POST"])
+def admin_add_resep():    
+    req = request.get_json()
+    judul = req.get("judul", "").strip()    
+    deskripsi = req.get("deskripsi", "").strip()    
+    bahan = req.get("bahan", []) # Udah otomatis bentuk list gara2 JSON
+    gambar_url = req.get("gambar", "").strip() 
+    
+    if not judul or not bahan:        
+        return jsonify({"success": False, "error": "Judul dan bahan wajib diisi"}), 400    
+    
+    new_resep = Resep(judul=judul, deskripsi=deskripsi, gambar=gambar_url)    
+    db.session.add(new_resep)    
+    
+    nama_bahan_list = [item.get("nama", "").lower() for item in bahan]    
+    makanan_db = Makanan.query.filter(Makanan.nama.in_(nama_bahan_list)).all()    
+    makanan_map = {m.nama: m.id for m in makanan_db}    
+    
+    for item in bahan:        
+        nama = item.get("nama", "").lower()        
+        if nama in makanan_map:            
+            db.session.add(BahanResep(berat=float(item.get("berat", 0)), resep=new_resep, makanan_id=makanan_map[nama]))    
+    try:        
+        db.session.commit()        
+        return jsonify({"success": True})    
+    except Exception as e:        
+        db.session.rollback()        
+        return jsonify({"success": False, "error": str(e)}), 500    
+
+@app.route("/api/admin/edit_resep", methods=["POST"])
+def admin_edit_resep():    
+    req = request.get_json()
+    old_judul = req.get("old_judul", "").strip()    
+    resep = Resep.query.filter_by(judul=old_judul).first()    
+    if not resep:        
+        return jsonify({"success": False, "error": "Resep tidak ditemukan"}), 404    
+    
+    resep.judul = req.get("judul", "").strip()    
+    resep.deskripsi = req.get("deskripsi", "").strip()    
+    resep.gambar = req.get("gambar", "").strip()
+    bahan_baru = req.get("bahan", [])
+    
+    if not resep.judul or not bahan_baru:        
+        return jsonify({"success": False, "error": "Judul dan bahan wajib diisi"}), 400    
+    
+    BahanResep.query.filter_by(resep_id=resep.id).delete()        
+    nama_bahan_list = [item.get("nama", "").lower() for item in bahan_baru]    
+    makanan_db = Makanan.query.filter(Makanan.nama.in_(nama_bahan_list)).all()    
+    makanan_map = {m.nama: m.id for m in makanan_db}    
+    
+    for item in bahan_baru:        
+        nama = item.get("nama", "").lower()        
+        if nama in makanan_map:            
+            db.session.add(BahanResep(berat=float(item.get("berat")), resep_id=resep.id, makanan_id=makanan_map[nama]))        
+    try:        
+        db.session.commit()        
+        return jsonify({"success": True})    
+    except Exception as e:        
+        db.session.rollback()        
+        return jsonify({"success": False, "error": str(e)}), 500    
+
+@app.route("/api/admin/delete_resep", methods=["POST"])
+def admin_delete_resep():    
+    judul = request.json.get("nama", "").strip()    
+    resep = Resep.query.filter_by(judul=judul).first()    
+    if resep:        
+        db.session.delete(resep)        
+        db.session.commit()        
+        return jsonify({"success": True})    
+    return jsonify({"success": False, "error": "Resep tidak ditemukan"}), 404
 
 @app.route("/api/admin/list_resep")
 def admin_list_resep():    
