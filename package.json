@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "vercel-build": "npm install tailwindcss && npx tailwindcss -i ./input.css -o ./static/css/output.css --minify"
+  }
+}
