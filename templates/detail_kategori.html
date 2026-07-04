@@ -4,36 +4,10 @@
     <meta charset="UTF-8">
     <title>Kategori: {{ nama_kategori|title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: {
-                            900: '#0a192f',
-                            800: '#112240',
-                            700: '#233554',
-                        },
-                        teks: {
-                            utama: '#ccd6f6',
-                            terang: '#e6f1ff',
-                            aksen: '#64ffda',
-                        }
-                    },
-                    fontFamily: {
-                        'body': ['Poppins', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 <body class="bg-navy-900 text-teks-utama font-body min-h-screen p-6 md:p-12">
 
