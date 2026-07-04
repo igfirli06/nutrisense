@@ -482,6 +482,13 @@ def create_tables():
                 db.session.rollback()
                 print(f"Gagal migrasi otomatis: {str(e)}")
 
+@app.after_request
+def add_header(response):
+    # Menginstruksikan browser untuk menyimpan cache aset selama 1 hari (86400 detik)
+    if 'Cache-Control' not in response.headers:
+        response.headers['Cache-Control'] = 'public, max-age=86400'
+    return response
+
 if __name__ == "__main__":    
     app.run(host="0.0.0.0", port=7860, debug=False)
 
